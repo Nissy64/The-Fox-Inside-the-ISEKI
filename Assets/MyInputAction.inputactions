@@ -1,0 +1,56 @@
+{
+    "name": "MyInputAction",
+    "maps": [
+        {
+            "name": "Play",
+            "id": "d39e6b6b-f7a6-4e6c-9d44-e68b0121ba25",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "107b0950-cbc8-402b-ad1c-2a9e2178f513",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "Keyboard",
+                    "id": "413222ef-d0a5-4bc0-81fd-62001d3d2d75",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "7271c0c3-d03d-4a3c-92fe-e0263e1d6111",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "dc5e042b-070c-430d-afa7-75db06067f32",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
