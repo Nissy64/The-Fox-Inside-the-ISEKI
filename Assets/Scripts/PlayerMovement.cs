@@ -16,7 +16,11 @@ public class PlayerMovement : MonoBehaviour
     public float decceleration;
     public float velPower;
     [Header("Jump")]
-    public float jumpForce = 1;
+    public float playerGravityScale = 5;
+    public float playerJumpForce = 1;
+    public float coyoteTime = 0.2f;
+    private float coyoteTimeCounter;
+    private float fallMultiplier;
     [Header("Check Ground")]
     private bool isGround;
     public Transform groundCheckPosition;
@@ -31,9 +35,29 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        Movement();
         isGround = GroundChecker.IsGround(groundCheckPosition, groundCheckSize, groundLayer);
-        print(jumpInput);
+
+        CoyoteTimer();
+        Movement();
+
+        if(isGround)
+        {
+            rb.gravityScale = 3;
+        }
+        else
+        {
+            rb.gravityScale = playerGravityScale;
+            rb.AddForce(Vector2.up * fallMultiplier);
+        }
+
+        if(rb.velocity.y > 0)
+        {
+            fallMultiplier = playerGravityScale * 1.25f;
+        }
+        if(rb.velocity.y <= 0)
+        {
+            fallMultiplier = 0;
+        }
     }
 
     void OnEnable()
@@ -79,10 +103,12 @@ public class PlayerMovement : MonoBehaviour
     {
         Run();
 
-        if(jumpInput && isGround)
+        if(jumpInput && coyoteTimeCounter > 0f)
         {
             Jump();
         }
+
+        print(rb.velocity);
     }
 
     private void Run()
@@ -97,6 +123,20 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        rb.velocity = Vector2.up * playerJumpForce;
+
+        coyoteTimeCounter = 0;
+    }
+
+    private void CoyoteTimer()
+    {
+        if(isGround)
+        {
+            coyoteTimeCounter = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+        }
     }
 }
