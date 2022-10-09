@@ -6,15 +6,15 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody2D rb;
     private PlayerInput input;
-    private float moveInput;
     private bool jumpInput;
+    private float moveInput;
     [Header("Run")]
     public float palyerSpeed = 5;
     public float acceleration;
     public float decceleration;
     public float velPower;
+    private Rigidbody2D rb;
     [Header("Jump")]
     public float playerGravityScale = 5;
     public float playerJumpForce = 1;
@@ -22,10 +22,12 @@ public class PlayerMovement : MonoBehaviour
     private float coyoteTimeCounter;
     private float fallMultiplier;
     [Header("Check Ground")]
-    private bool isGround;
     public Transform groundCheckPosition;
     public Vector2 groundCheckSize;
     public LayerMask groundLayer;
+    private bool isGround;
+    // Flip sprite
+    public bool facingRight = true;
 
     void Awake()
     {
@@ -39,25 +41,6 @@ public class PlayerMovement : MonoBehaviour
 
         CoyoteTimer();
         Movement();
-
-        if(isGround)
-        {
-            rb.gravityScale = 3;
-        }
-        else
-        {
-            rb.gravityScale = playerGravityScale;
-            rb.AddForce(Vector2.up * fallMultiplier);
-        }
-
-        if(rb.velocity.y > 0)
-        {
-            fallMultiplier = playerGravityScale * 1.25f;
-        }
-        if(rb.velocity.y <= 0)
-        {
-            fallMultiplier = 0;
-        }
     }
 
     void OnEnable()
@@ -108,7 +91,9 @@ public class PlayerMovement : MonoBehaviour
             Jump();
         }
 
-        print(rb.velocity);
+        AdjustGravity();
+
+        FlipSprite();
     }
 
     private void Run()
@@ -137,6 +122,40 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             coyoteTimeCounter -= Time.deltaTime;
+        }
+    }
+
+    private void FlipSprite()
+    {
+        if(moveInput > 0)
+        {
+            transform.eulerAngles = Vector3.zero;
+        }
+        if(moveInput < 0)
+        {
+            transform.eulerAngles = Vector3.up * 180;
+        }
+    }
+
+    private void AdjustGravity()
+    {
+        if(isGround)
+        {
+            rb.gravityScale = 3;
+        }
+        else
+        {
+            rb.gravityScale = playerGravityScale;
+            rb.AddForce(Vector2.up * fallMultiplier);
+        }
+
+        if(rb.velocity.y > 0)
+        {
+            fallMultiplier = playerGravityScale * 1.25f;
+        }
+        if(rb.velocity.y <= 0)
+        {
+            fallMultiplier = 0;
         }
     }
 }
