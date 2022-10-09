@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // inputs
     private PlayerInput input;
     private bool jumpInput;
     private float moveInput;
@@ -16,18 +17,15 @@ public class PlayerMovement : MonoBehaviour
     public float velPower;
     private Rigidbody2D rb;
     [Header("Jump")]
-    public float playerGravityScale = 5;
+    public float playerFalloffMultiplier = 5;
     public float playerJumpForce = 1;
     public float coyoteTime = 0.2f;
     private float coyoteTimeCounter;
-    private float fallMultiplier;
     [Header("Check Ground")]
     public Transform groundCheckPosition;
     public Vector2 groundCheckSize;
     public LayerMask groundLayer;
     private bool isGround;
-    // Flip sprite
-    public bool facingRight = true;
 
     void Awake()
     {
@@ -91,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
             Jump();
         }
 
-        AdjustGravity();
+        JumpFalloff();
 
         FlipSprite();
     }
@@ -111,6 +109,14 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = Vector2.up * playerJumpForce;
 
         coyoteTimeCounter = 0;
+    }
+
+    private void JumpFalloff()
+    {
+        if(!(coyoteTimeCounter > 0f) && rb.velocity.y > 0)
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * playerFalloffMultiplier * Time.deltaTime;
+        }
     }
 
     private void CoyoteTimer()
@@ -134,28 +140,6 @@ public class PlayerMovement : MonoBehaviour
         if(moveInput < 0)
         {
             transform.eulerAngles = Vector3.up * 180;
-        }
-    }
-
-    private void AdjustGravity()
-    {
-        if(isGround)
-        {
-            rb.gravityScale = 3;
-        }
-        else
-        {
-            rb.gravityScale = playerGravityScale;
-            rb.AddForce(Vector2.up * fallMultiplier);
-        }
-
-        if(rb.velocity.y > 0)
-        {
-            fallMultiplier = playerGravityScale * 1.25f;
-        }
-        if(rb.velocity.y <= 0)
-        {
-            fallMultiplier = 0;
         }
     }
 }
