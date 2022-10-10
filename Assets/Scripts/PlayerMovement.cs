@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // inputs
+    // Inputs
     private PlayerInput input;
     private bool jumpInput;
     private float moveInput;
@@ -133,13 +133,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void FlipSprite()
     {
+        Vector3 facingRight = Vector3.zero;
+        Vector3 facingLeft = Vector3.up * 180;
+
         if(moveInput > 0)
         {
-            transform.eulerAngles = Vector3.zero;
+            transform.eulerAngles = facingRight;
         }
         if(moveInput < 0)
         {
-            transform.eulerAngles = Vector3.up * 180;
+            transform.eulerAngles = facingLeft;
         }
     }
+
+    
 }
