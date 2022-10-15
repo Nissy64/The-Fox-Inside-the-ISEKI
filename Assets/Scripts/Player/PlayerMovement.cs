@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     // Inputs
-    private PlayerInput input;
+    private PlayerInputs playerInputs;
     private bool jumpInput;
     private float moveInput;
     [Header("Run")]
@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         TryGetComponent(out rb);
-        TryGetComponent(out input);
+        TryGetComponent(out playerInputs);
     }
 
     void FixedUpdate()
@@ -41,43 +41,21 @@ public class PlayerMovement : MonoBehaviour
         Movement();
     }
 
-    void OnEnable()
+    void Update()
     {
-        input.actions["Move"].performed += OnMove;
-        input.actions["Move"].canceled += OnMoveStop;
-
-        input.actions["Jump"].started += OnJump;
-        input.actions["Jump"].canceled += OnJump;
-    }
-
-    void OnDisable() 
-    {
-        input.actions["Move"].performed -= OnMove;
-        input.actions["Move"].canceled -= OnMoveStop;
-
-        input.actions["Jump"].started -= OnJump;
-        input.actions["Jump"].canceled -= OnJump;
-    }
-
-    private void OnMoveStop(InputAction.CallbackContext obj)
-    {
-        moveInput = 0;
-    }
-
-    private void OnMove(InputAction.CallbackContext obj)
-    {
-        moveInput = obj.ReadValue<float>();
-    }
-
-    private void OnJump(InputAction.CallbackContext obj)
-    {
-        jumpInput = obj.ReadValue<float>() > 0.01f;
+        Inputs();
     }
 
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(groundCheckPosition.position, groundCheckSize);
+    }
+
+    private void Inputs()
+    {
+        jumpInput = playerInputs.jumpInput;
+        moveInput = playerInputs.moveInput;
     }
 
     private void Movement()
@@ -145,6 +123,4 @@ public class PlayerMovement : MonoBehaviour
             transform.eulerAngles = facingLeft;
         }
     }
-
-    
 }

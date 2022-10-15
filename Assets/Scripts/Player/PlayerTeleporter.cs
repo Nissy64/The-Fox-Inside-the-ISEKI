@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerTeleporter : MonoBehaviour
 {
     private GameObject currentTeleporter;
 
-    public float teleportCoolDown = 1;
+    public float teleportCoolDown = 1.5f;
+    [SerializeField, ReadOnly]
     private float teleportCoolDownCounter;
 
     void Awake() 
