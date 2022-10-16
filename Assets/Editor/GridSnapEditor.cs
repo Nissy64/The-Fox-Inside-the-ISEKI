@@ -16,7 +16,6 @@ public class GridSnapEditor : Editor
 
     private void OnSceneGUI()
     {
-        Tools.current = Tool.None;
 
         _center = GetCenterOfInstances(_instances);
 

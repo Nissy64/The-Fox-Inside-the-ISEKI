@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using DG.Tweening;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -26,11 +26,15 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 groundCheckSize;
     public LayerMask groundLayer;
     private bool isGround;
+    [Space(10)]
+    public Transform wheel;
+    private Vector3 startWheelPos;
 
     void Awake()
     {
         TryGetComponent(out rb);
         TryGetComponent(out playerInputs);
+        startWheelPos = wheel.localPosition;
     }
 
     void FixedUpdate()
@@ -65,11 +69,14 @@ public class PlayerMovement : MonoBehaviour
         if(jumpInput && coyoteTimeCounter > 0f)
         {
             Jump();
+            WheelAnimation();
         }
 
         JumpFalloff();
 
         FlipSprite();
+
+        SpriteTilt();
     }
 
     private void Run()
@@ -122,5 +129,27 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.eulerAngles = facingLeft;
         }
+    }
+
+    private void SpriteTilt()
+    {
+        if(moveInput > 0)
+        {
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, -rb.velocity.x);
+        }
+        if(moveInput == 0)
+        {
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+        }
+        if(moveInput < 0)
+        {
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, rb.velocity.x);
+        }
+    }
+
+    private void WheelAnimation()
+    {
+        wheel.DOLocalMoveY(startWheelPos.y - 0.75f, 0.15f);
+        wheel.DOLocalMoveY(startWheelPos.y, 0.075f).SetDelay(0.16f);
     }
 }
