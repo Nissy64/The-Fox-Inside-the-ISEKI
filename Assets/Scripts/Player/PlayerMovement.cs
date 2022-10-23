@@ -6,16 +6,18 @@ using DG.Tweening;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Inputs
-    private PlayerInputs playerInputs;
+    [Header("Inputs")]
+    public PlayerInputs playerInputs;
+    [SerializeField, ReadOnly]
     private bool jumpInput;
+    [SerializeField, ReadOnly]
     private float moveInput;
     [Header("Run")]
+    public Rigidbody2D rb;
     public float palyerSpeed = 5;
     public float acceleration;
     public float decceleration;
     public float velPower;
-    private Rigidbody2D rb;
     [Header("Jump")]
     public float playerFalloffMultiplier = 5;
     public float playerJumpForce = 1;
@@ -26,20 +28,18 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 groundCheckSize;
     public LayerMask groundLayer;
     private bool isGround;
-    [Space(10)]
-    public Transform wheel;
-    private Vector3 startWheelPos;
+    [Header("Animation")]
+    public Animator animator;
 
     void Awake()
     {
-        TryGetComponent(out rb);
-        TryGetComponent(out playerInputs);
-        startWheelPos = wheel.localPosition;
+        
     }
 
     void FixedUpdate()
     {
         isGround = GroundChecker.IsGround(groundCheckPosition, groundCheckSize, groundLayer);
+        animator.SetFloat("Speed", Mathf.Abs(moveInput));
 
         CoyoteTimer();
         Movement();
@@ -69,14 +69,15 @@ public class PlayerMovement : MonoBehaviour
         if(jumpInput && coyoteTimeCounter > 0f)
         {
             Jump();
-            WheelAnimation();
+        }
+        if(coyoteTimeCounter > 0f)
+        {
+            animator.SetBool("IsJumping", false);
         }
 
         JumpFalloff();
 
         FlipSprite();
-
-        SpriteTilt();
     }
 
     private void Run()
@@ -94,6 +95,7 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = Vector2.up * playerJumpForce;
 
         coyoteTimeCounter = 0;
+        animator.SetBool("IsJumping", true);
     }
 
     private void JumpFalloff()
@@ -131,25 +133,5 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void SpriteTilt()
-    {
-        if(moveInput > 0)
-        {
-            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, -rb.velocity.x);
-        }
-        if(moveInput == 0)
-        {
-            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
-        }
-        if(moveInput < 0)
-        {
-            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, rb.velocity.x);
-        }
-    }
 
-    private void WheelAnimation()
-    {
-        wheel.DOLocalMoveY(startWheelPos.y - 0.75f, 0.15f);
-        wheel.DOLocalMoveY(startWheelPos.y, 0.075f).SetDelay(0.16f);
-    }
 }
