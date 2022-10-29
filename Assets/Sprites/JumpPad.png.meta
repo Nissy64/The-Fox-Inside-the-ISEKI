@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 48599f8b0c46e2d4a86eeca00983a594
+guid: 2bf6d4de0fe270b428c414698e10ccd2
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -105,7 +105,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlayerDash_0
+      name: JumpPad_0
       rect:
         serializedVersion: 2
         x: 0
@@ -119,14 +119,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 238722fd107c2c84c8c435f7a78632e7
-      internalID: 155604445
+      spriteID: 69af0dd98bfcd224fad387d7562a31bd
+      internalID: -1004371800
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerDash_1
+      name: JumpPad_1
       rect:
         serializedVersion: 2
         x: 32
@@ -140,8 +140,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 365f6ca2be89c30408e455dbbaf324fd
-      internalID: -2032376217
+      spriteID: 9be6d09846e7c364ca5797f28b756cd4
+      internalID: -347948267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JumpPad_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 165762125578e9847b1dffcd296c6b31
+      internalID: 1334854065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JumpPad_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ca8f5a921ebc5d4eb050b253b49338f
+      internalID: -1170296039
       vertices: []
       indices: 
       edges: []
@@ -157,8 +199,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PlayerDash_1: -2032376217
-      PlayerDash_0: 155604445
+      JumpPad_0: -1004371800
+      JumpPad_3: -1170296039
+      JumpPad_1: -347948267
+      JumpPad_2: 1334854065
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     public float decceleration;
     public float velPower;
     [Header("Dash")]
+    public TrailRenderer trail;
     public float dashingPower = 24;
     public float dashingTime = 0.2f;
     public float dashCooldown = 1f;
@@ -111,6 +112,11 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("IsDashing", false);
         }
 
+        if(rb.velocity.y > 5)
+        {
+            animator.SetBool("IsJumping", true);
+        }
+
         JumpFalloff();
 
         FlipSprite();
@@ -173,6 +179,7 @@ public class PlayerMovement : MonoBehaviour
     {
         isDashing = true;
         canDash = false;
+        trail.emitting = true;
         Vector2 dashingDirection = new Vector2(moveInput, verticalInput);
 
         if(dashingDirection == Vector2.zero)
@@ -193,6 +200,7 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(dashingTime);
         isDashing = false;
+        trail.emitting = false;
         dashCooldownCounter = ResetCooldownTimer(dashCooldown);
     }
 
