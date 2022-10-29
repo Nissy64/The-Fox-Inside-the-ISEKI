@@ -57,7 +57,8 @@ public class PlayerMovement : MonoBehaviour
     {
         isGround = GroundChecker.IsGround(groundCheckPosition, groundCheckSize, groundLayer);
         dashCooldownCounter = CoolTimer(dashCooldownCounter);
-        animator.SetFloat("Speed", Mathf.Abs(moveInput));
+        if(!isGround) animator.SetFloat("Speed", 0);
+        else animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
 
         CoyoteTimer();
         Movement();
@@ -107,6 +108,7 @@ public class PlayerMovement : MonoBehaviour
         if(coyoteTimeCounter > 0f)
         {
             animator.SetBool("IsJumping", false);
+            animator.SetBool("IsDashing", false);
         }
 
         JumpFalloff();
@@ -181,6 +183,8 @@ public class PlayerMovement : MonoBehaviour
         if(isDashing)
         {
             rb.velocity = dashingDirection.normalized * dashingPower;
+            animator.SetBool("IsJumping", false);
+            animator.SetBool("IsDashing", true);
             return;
         }
     }
