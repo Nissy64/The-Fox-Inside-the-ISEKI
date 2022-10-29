@@ -11,13 +11,26 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField, ReadOnly]
     private bool jumpInput;
     [SerializeField, ReadOnly]
+    private bool interactInput;
+    [SerializeField, ReadOnly]
+    private bool dashInput;
+    [SerializeField, ReadOnly]
     private float moveInput;
+    [SerializeField, ReadOnly]
+    private float verticalInput;
     [Header("Run")]
     public Rigidbody2D rb;
     public float palyerSpeed = 5;
     public float acceleration;
     public float decceleration;
     public float velPower;
+    [Header("Dash")]
+    public float dashingPower = 24;
+    public float dashingTime = 0.2f;
+    public float dashCooldown = 1f;
+    private float dashCooldownCounter = 1f;
+    private bool canDash = true;
+    private bool isDashing;
     [Header("Jump")]
     public float playerFalloffMultiplier = 5;
     public float playerJumpForce = 1;
@@ -30,15 +43,20 @@ public class PlayerMovement : MonoBehaviour
     private bool isGround;
     [Header("Animation")]
     public Animator animator;
+    [Header("Interact")]
+    public Vector2 interactPosition;
+    public float interactRadius;
 
     void Awake()
     {
-        
+        canDash = true;
+        dashCooldownCounter = ResetCooldownTimer(dashCooldown);
     }
 
     void FixedUpdate()
     {
         isGround = GroundChecker.IsGround(groundCheckPosition, groundCheckSize, groundLayer);
+        dashCooldownCounter = CoolTimer(dashCooldownCounter);
         animator.SetFloat("Speed", Mathf.Abs(moveInput));
 
         CoyoteTimer();
@@ -60,11 +78,27 @@ public class PlayerMovement : MonoBehaviour
     {
         jumpInput = playerInputs.jumpInput;
         moveInput = playerInputs.moveInput;
+        interactInput = playerInputs.interactInput;
+        dashInput = playerInputs.dashInput;
+        verticalInput = playerInputs.verticalInput;
     }
 
     private void Movement()
     {
+        if(isDashing) return;
+
         Run();
+
+        if(canDash && dashInput && dashCooldownCounter == 0)
+        {
+            StartDash();
+            StartCoroutine(StopDashing());
+        }
+
+        if(coyoteTimeCounter > 0f)
+        {
+            canDash = true;
+        }
 
         if(jumpInput && coyoteTimeCounter > 0f)
         {
@@ -133,5 +167,67 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void StartDash()
+    {
+        isDashing = true;
+        canDash = false;
+        Vector2 dashingDirection = new Vector2(moveInput, verticalInput);
 
+        if(dashingDirection == Vector2.zero)
+        {
+            dashingDirection = new Vector2(GetDirection(), 0);
+        }
+
+        if(isDashing)
+        {
+            rb.velocity = dashingDirection.normalized * dashingPower;
+            return;
+        }
+    }
+
+    private IEnumerator StopDashing()
+    {
+        yield return new WaitForSeconds(dashingTime);
+        isDashing = false;
+        dashCooldownCounter = ResetCooldownTimer(dashCooldown);
+    }
+
+    private float CoolTimer(float cooldownCounter)
+    {
+        if(cooldownCounter > 0)
+        {
+            cooldownCounter -= Time.deltaTime;
+        }
+
+        if(cooldownCounter < 0)
+        {
+            cooldownCounter = 0;
+        }
+
+        return cooldownCounter;
+    }
+
+    private float ResetCooldownTimer(float cooldown)
+    {
+        return cooldown;
+    }
+
+    private int GetDirection()
+    {
+        int direction = 1;
+        Vector3 facingRight = Vector3.zero;
+        Vector3 facingLeft = Vector3.up * 180;
+
+        if(transform.eulerAngles == facingRight)
+        {
+            direction = 1;
+        }
+
+        if(transform.eulerAngles == facingLeft)
+        {
+            direction = -1;
+        }
+
+        return direction;
+    }
 }

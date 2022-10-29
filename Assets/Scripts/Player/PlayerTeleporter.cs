@@ -7,20 +7,20 @@ public class PlayerTeleporter : MonoBehaviour
 {
     private GameObject currentTeleporter;
 
-    public float teleportCoolDown = 1.5f;
+    public float teleportCooldown = 1.5f;
     [SerializeField, ReadOnly]
-    private float teleportCoolDownCounter;
+    private float teleportCooldownCounter;
 
     void Awake() 
     {
-        ResetCoolDownTimer();
+        ResetCooldownTimer();
     }
 
     private void Update() 
     {
-        TeleportCoolTime();
+        TeleportCoolTimer();
 
-        if(teleportCoolDownCounter == 0)
+        if(teleportCooldownCounter == 0)
         {
             Teleport();
         }
@@ -50,25 +50,25 @@ public class PlayerTeleporter : MonoBehaviour
 
             transform.position = teleporter.GetDestination().position;
             transform.rotation = teleporter.GetDestination().rotation;
-            ResetCoolDownTimer();
+            ResetCooldownTimer();
         }
     }
 
-    private void TeleportCoolTime()
+    private void TeleportCoolTimer()
     {
-        if(teleportCoolDownCounter > 0)
+        if(teleportCooldownCounter > 0)
         {
-            teleportCoolDownCounter -= Time.deltaTime;
+            teleportCooldownCounter -= Time.deltaTime;
         }
 
-        if(teleportCoolDownCounter < 0)
+        if(teleportCooldownCounter < 0)
         {
-            teleportCoolDownCounter = 0;
+            teleportCooldownCounter = 0;
         }
     }
 
-    private void ResetCoolDownTimer()
+    private void ResetCooldownTimer()
     {
-        teleportCoolDownCounter = teleportCoolDown;
+        teleportCooldownCounter = teleportCooldown;
     }
 }

@@ -921,8 +921,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 814743526}
-  m_LocalRotation: {x: -0, y: -0.00000008742278, z: 0, w: -1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.25, y: -1, z: 0.0000010927847}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -966,21 +966,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerInputs: {fileID: 814743535}
   jumpInput: 0
+  interactInput: 0
+  dashInput: 0
   moveInput: 0
+  verticalInput: 0
   rb: {fileID: 814743529}
   palyerSpeed: 10.5
   acceleration: 8
   decceleration: 9
   velPower: 0.9
+  dashingPower: 24
+  dashingTime: 0.2
+  dashCooldown: 1
   playerFalloffMultiplier: 6
   playerJumpForce: 22
   coyoteTime: 0.15
   groundCheckPosition: {fileID: 1396370687}
-  groundCheckSize: {x: 0.35, y: 0.05}
+  groundCheckSize: {x: 0.87, y: 0.05}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
   animator: {fileID: 814743536}
+  interactPosition: {x: 0, y: 0}
+  interactRadius: 0
 --- !u!114 &814743531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1024,7 +1032,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.15, y: -0.25}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1035,7 +1043,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.75}
+  m_Size: {x: 0.89, y: 1}
   m_EdgeRadius: 0.06
 --- !u!70 &814743533
 CapsuleCollider2D:
@@ -1050,9 +1058,9 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.375}
-  m_Size: {x: 1.11, y: 1.11}
-  m_Direction: 0
+  m_Offset: {x: 0.15, y: -0.765}
+  m_Size: {x: 1, y: 0.35}
+  m_Direction: 1
 --- !u!114 &814743534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1065,8 +1073,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b67afaa1c41123498958ab5e2e6aafe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teleportCoolDown: 1.5
-  teleportCoolDownCounter: 0
+  teleportCooldown: 1.5
+  teleportCooldownCounter: 0
 --- !u!114 &814743535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1079,8 +1087,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1774ad878e9ad54bb394fc98eb9107a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpInput: 0
   moveInput: 0
+  jumpInput: 0
+  interactInput: 0
+  dashInput: 0
+  verticalInput: 0
 --- !u!95 &814743536
 Animator:
   serializedVersion: 4
@@ -1248,7 +1259,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1396370686}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.037, y: -0.9375, z: 0}
+  m_LocalPosition: {x: 0.19, y: -0.9375, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
