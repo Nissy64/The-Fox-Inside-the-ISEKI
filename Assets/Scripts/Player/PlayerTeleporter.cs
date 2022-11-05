@@ -7,6 +7,7 @@ public class PlayerTeleporter : MonoBehaviour
 {
     private GameObject currentTeleporter;
 
+    public TrailRenderer playerTrail;
     public float teleportCooldown = 1.5f;
     [SerializeField, ReadOnly]
     private float teleportCooldownCounter;
@@ -50,6 +51,7 @@ public class PlayerTeleporter : MonoBehaviour
 
             transform.position = teleporter.GetDestination().position;
             transform.rotation = teleporter.GetDestination().rotation;
+            playerTrail.emitting = false;
             ResetCooldownTimer();
         }
     }
