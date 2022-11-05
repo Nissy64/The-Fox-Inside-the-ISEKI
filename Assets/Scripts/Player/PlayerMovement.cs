@@ -153,7 +153,7 @@ public class PlayerMovement : MonoBehaviour
 		trail.emitting = true;
 		Vector2 dashingDirection = new Vector2(playerInputs.moveInput, playerInputs.verticalInput);
 
-		if(dashingDirection == Vector2.zero)
+		if(dashingDirection == Vector2.zero || dashingDirection.y == -1)
 		{
 			dashingDirection = new Vector2(GetDirection(), 0);
 		}
