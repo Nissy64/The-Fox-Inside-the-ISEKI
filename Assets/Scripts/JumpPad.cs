@@ -15,7 +15,7 @@ public class JumpPad : MonoBehaviour
         {
             playerAnimator.SetBool("IsJumping", true);
             myAnimator.SetBool("IsRiding", true);
-            Invoke(nameof(Jump), 0.1f);
+            Invoke(nameof(Jump), 0.05f);
             Invoke(nameof(StopAnimation), 0.6f);
         }
     }
