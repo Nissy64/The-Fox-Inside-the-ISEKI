@@ -1,76 +1,77 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Objects;
 
-
-public class PlayerTeleporter : MonoBehaviour
+namespace Player
 {
-    private GameObject currentTeleporter;
-
-    public TrailRenderer playerTrail;
-    public float teleportCooldown = 1.5f;
-    [SerializeField, ReadOnly]
-    private float teleportCooldownCounter;
-
-    void Awake() 
+    public class PlayerTeleporter : MonoBehaviour
     {
-        ResetCooldownTimer();
-    }
+        private GameObject currentTeleporter;
 
-    private void Update() 
-    {
-        TeleportCoolTimer();
+        public TrailRenderer playerTrail;
+        public float teleportCooldown = 1.5f;
+        [SerializeField, ReadOnly]
+        private float teleportCooldownCounter;
 
-        if(teleportCooldownCounter == 0)
+        void Awake() 
         {
-            Teleport();
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D other) 
-    {
-        if(other.CompareTag("Teleporter"))
-        {
-            currentTeleporter = other.gameObject;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other) {
-        if(!other.CompareTag("Teleporter")) return;
-        if(other.gameObject == currentTeleporter)
-        {
-            currentTeleporter = null;
-        }
-    }
-
-    private void Teleport()
-    {
-        if(currentTeleporter != null)
-        {
-            Teleporter teleporter = currentTeleporter.GetComponent<Teleporter>();
-
-            transform.position = teleporter.GetDestination().position;
-            transform.rotation = teleporter.GetDestination().rotation;
-            playerTrail.emitting = false;
             ResetCooldownTimer();
         }
-    }
 
-    private void TeleportCoolTimer()
-    {
-        if(teleportCooldownCounter > 0)
+        private void Update() 
         {
-            teleportCooldownCounter -= Time.deltaTime;
+            TeleportCoolTimer();
+
+            if(teleportCooldownCounter == 0)
+            {
+                Teleport();
+            }
         }
 
-        if(teleportCooldownCounter < 0)
+        private void OnTriggerEnter2D(Collider2D collision) 
         {
-            teleportCooldownCounter = 0;
+            if(collision.CompareTag("Teleporter"))
+            {
+                currentTeleporter = collision.gameObject;
+            }
         }
-    }
 
-    private void ResetCooldownTimer()
-    {
-        teleportCooldownCounter = teleportCooldown;
+        private void OnTriggerExit2D(Collider2D collision) {
+            if(!collision.CompareTag("Teleporter")) return;
+            if(collision.gameObject == currentTeleporter)
+            {
+                currentTeleporter = null;
+            }
+        }
+
+        private void Teleport()
+        {
+            if(currentTeleporter != null)
+            {
+                Teleporter teleporter = currentTeleporter.GetComponent<Teleporter>();
+
+                transform.position = teleporter.GetDestination().position;
+                transform.rotation = teleporter.GetDestination().rotation;
+                playerTrail.emitting = false;
+                ResetCooldownTimer();
+            }
+        }
+
+        private void TeleportCoolTimer()
+        {
+            if(teleportCooldownCounter > 0)
+            {
+                teleportCooldownCounter -= Time.deltaTime;
+            }
+
+            if(teleportCooldownCounter < 0)
+            {
+                teleportCooldownCounter = 0;
+            }
+        }
+
+        private void ResetCooldownTimer()
+        {
+            teleportCooldownCounter = teleportCooldown;
+        }
     }
 }

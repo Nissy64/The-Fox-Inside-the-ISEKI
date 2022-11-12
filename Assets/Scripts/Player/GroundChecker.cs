@@ -1,16 +1,19 @@
 using UnityEngine;
 
-public class GroundChecker : MonoBehaviour
+namespace Player
 {
-    public static bool IsGround(Transform position, Vector2 size, LayerMask layer)
+    public class GroundChecker : MonoBehaviour
     {
-        if(Physics2D.OverlapBox(position.position, size, 0, layer))
+        public static bool IsGround(Transform position, Vector2 size, LayerMask layer)
         {
-            return true;
-        }
-        else
-        {
-            return false;
+            if(Physics2D.OverlapBox(position.position, size, 0, layer))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
