@@ -1,27 +1,29 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Objects 
 {
     public class JumpPad : MonoBehaviour
     {
-        public Animator playerAnimator;
         public Animator myAnimator;
-        public Rigidbody2D playerRb;
         public float bounce = 5f;
+        private Rigidbody2D playerRb;
 
         void OnCollisionEnter2D(Collision2D collision)
         {
             if(collision.gameObject.CompareTag("Player"))
             {
-                playerAnimator.SetBool("IsJumping", true);
+                collision.gameObject.GetComponent<Animator>().SetBool("IsJumping", true);
+                playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
                 myAnimator.SetBool("IsRiding", true);
-                Invoke(nameof(Jump), 0.05f);
-                Invoke(nameof(StopAnimation), 0.6f);
+                Jump();
+                StartCoroutine(StopAnimation());
             }
         }
 
-        private void StopAnimation()
+        private IEnumerator StopAnimation()
         {
+            yield return new WaitForSeconds(0.6f);
             myAnimator.SetBool("IsRiding", false);
         }
 

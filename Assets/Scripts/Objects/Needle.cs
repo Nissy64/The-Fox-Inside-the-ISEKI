@@ -11,7 +11,7 @@ namespace Objects
             {
                 PlayerMovement playerMovement = collision.gameObject.GetComponent<PlayerMovement>();
 
-                StartCoroutine(playerMovement.GameOver());
+                StartCoroutine(playerMovement.PlayerGameOver());
             }
         }
     }

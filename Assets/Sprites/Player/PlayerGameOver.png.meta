@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2bf6d4de0fe270b428c414698e10ccd2
+guid: 1f820170b39c54c478360cb1cd450e12
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -105,7 +105,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: JumpPad_0
+      name: PlayerGameOver_0
       rect:
         serializedVersion: 2
         x: 0
@@ -113,20 +113,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 69af0dd98bfcd224fad387d7562a31bd
-      internalID: -1004371800
+      spriteID: 8922d7c0254d7e14488bec0cf250905d
+      internalID: -2030652415
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: JumpPad_1
+      name: PlayerGameOver_1
       rect:
         serializedVersion: 2
         x: 32
@@ -134,20 +134,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9be6d09846e7c364ca5797f28b756cd4
-      internalID: -347948267
+      spriteID: fab73cb6ee132e5428fd7e303e60b0c3
+      internalID: 1805036108
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: JumpPad_2
+      name: PlayerGameOver_2
       rect:
         serializedVersion: 2
         x: 64
@@ -155,35 +155,14 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 165762125578e9847b1dffcd296c6b31
-      internalID: 1334854065
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: JumpPad_3
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6ca8f5a921ebc5d4eb050b253b49338f
-      internalID: -1170296039
+      spriteID: f80d49c7a8e44244480409e07679b737
+      internalID: 1857109274
       vertices: []
       indices: 
       edges: []
@@ -199,10 +178,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      JumpPad_0: -1004371800
-      JumpPad_3: -1170296039
-      JumpPad_1: -347948267
-      JumpPad_2: 1334854065
+      PlayerGameOver_0: -2030652415
+      PlayerGameOver_2: 1857109274
+      PlayerGameOver_1: 1805036108
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

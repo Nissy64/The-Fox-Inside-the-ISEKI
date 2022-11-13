@@ -36,15 +36,12 @@ namespace Player
 		private bool isGround;
 		[Header("Animation")]
 		public Animator animator;
-		[Header("Health")]
-		public SpriteRenderer spriteRenderer;
-		public Color gameOverColor = new Color(1, 0.5f, 0.5f);
 
 		void Awake()
 		{
 			canDash = true;
 			dashCooldownCounter = 0;
-			gameManager.isGameOver = false;
+			animator.SetBool("IsGameOver", false);
 		}
 
 		void FixedUpdate()
@@ -219,12 +216,13 @@ namespace Player
 			return direction;
 		}
 
-		public IEnumerator GameOver()
+		public IEnumerator PlayerGameOver()
 		{
-			spriteRenderer.color = gameOverColor;
 			rb.simulated = false;
+			animator.SetBool("IsGameOver", true);
 
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(0.25f);
+
 			gameManager.isGameOver = true;
 		}
 	}
