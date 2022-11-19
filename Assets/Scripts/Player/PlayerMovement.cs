@@ -30,54 +30,67 @@ namespace Player
 		public float coyoteTime = 0.2f;
 		private float coyoteTimeCounter;
 		[Header("Check Ground")]
-		public Transform groundCheckPosition;
-		public Vector2 groundCheckSize;
-		public LayerMask groundLayer;
-		private bool isGround;
+		public GroundChecker groundChecker;
+		[Header("Energy")]
+		public int maxEnergy = 3;
+		public int dashConsumeEnergy = 1;
+		public float energyChargeCooldown = 2;
+		public float noEnergyChergeCooldown = 5;
+		[SerializeField, ReadOnly]
+		private float energyChargeCooldownCounter = 1;
+		[SerializeField, ReadOnly]
+		private int currentEnergey = 0;
 		[Header("Animation")]
 		public Animator animator;
+
+		private bool isNoEnergy = false;
 
 		void Awake()
 		{
 			canDash = true;
-			dashCooldownCounter = 0;
+			currentEnergey = maxEnergy;
+			energyChargeCooldownCounter = ResetCooldownTimer(energyChargeCooldown);
 			animator.SetBool("IsGameOver", false);
 		}
 
 		void FixedUpdate()
 		{
-			isGround = GroundChecker.IsGround(groundCheckPosition, groundCheckSize, groundLayer);
-			dashCooldownCounter = CoolTimer(dashCooldownCounter);
-			if(!isGround) animator.SetFloat("Speed", 0);
+			if(coyoteTimeCounter > 0) canDash = true;
+
+			if(currentEnergey == 0 && !isNoEnergy)
+			{
+				energyChargeCooldownCounter = ResetCooldownTimer(noEnergyChergeCooldown);
+				isNoEnergy = true;
+			}
+
+			if(!(currentEnergey == maxEnergy)) energyChargeCooldownCounter = CoolTimer(energyChargeCooldownCounter);
+
+			ChargeEnergy();
+
+			if(!groundChecker.isGround) animator.SetFloat("Speed", 0);
 			else animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
 
 			CoyoteTimer();
 			Movement();
 		}
 
-		void OnDrawGizmosSelected()
-		{
-			Gizmos.color = Color.green;
-			Gizmos.DrawWireCube(groundCheckPosition.position, groundCheckSize);
-		}
-
 		private void Movement()
 		{
+			if(gameManager.isGameOver) return;
 			if(isDashing) return;
 
 			FlipSprite();
 
 			Run();
 
-			if(canDash && inputManager.dashInput && dashCooldownCounter == 0)
+			if(canDash && inputManager.dashInput && currentEnergey > 0)
 			{
 				StartDash();
 				StartCoroutine(StopDashing());
 			}
 
-			if(coyoteTimeCounter > 0f)
+			if(coyoteTimeCounter > 0)
 			{
-				canDash = true;
 				animator.SetBool("IsJumping", false);
 				animator.SetBool("IsDashing", false);
 
@@ -123,7 +136,7 @@ namespace Player
 
 		private void CoyoteTimer()
 		{
-			if(isGround)
+			if(groundChecker.isGround)
 			{
 				coyoteTimeCounter = coyoteTime;
 			}
@@ -151,7 +164,6 @@ namespace Player
 		private void StartDash()
 		{
 			isDashing = true;
-			canDash = false;
 			trail.emitting = true;
 			Vector2 dashingDirection = new Vector2(inputManager.moveInput, inputManager.verticalInput);
 
@@ -165,6 +177,8 @@ namespace Player
 				rb.velocity = dashingDirection.normalized * dashingPower;
 				animator.SetBool("IsJumping", false);
 				animator.SetBool("IsDashing", true);
+				currentEnergey -= dashConsumeEnergy;
+				canDash = false;
 				return;
 			}
 		}
@@ -224,6 +238,20 @@ namespace Player
 			yield return new WaitForSeconds(0.25f);
 
 			gameManager.isGameOver = true;
+		}
+
+		private void ChargeEnergy()
+		{
+			if(energyChargeCooldownCounter == 0)
+			{
+				isNoEnergy = false;
+
+				if(currentEnergey < maxEnergy)
+				{
+					currentEnergey += 1;
+					energyChargeCooldownCounter = ResetCooldownTimer(energyChargeCooldown);
+				}
+			}
 		}
 	}
 }

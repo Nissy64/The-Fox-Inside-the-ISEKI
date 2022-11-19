@@ -11,8 +11,6 @@ namespace Managers
         [ReadOnly]
         public bool jumpInput;
         [ReadOnly]
-        public bool interactInput;
-        [ReadOnly]
         public bool dashInput;
         [ReadOnly]
         public float verticalInput;
@@ -24,9 +22,6 @@ namespace Managers
 
             input.actions["Jump"].started += OnJump;
             input.actions["Jump"].canceled += OnJump;
-
-            input.actions["Interact"].started += OnInteract;
-            input.actions["Interact"].canceled += OnInteract;
 
             input.actions["Dash"].started += OnDash;
             input.actions["Dash"].canceled += OnDash;
@@ -42,9 +37,6 @@ namespace Managers
 
             input.actions["Jump"].started -= OnJump;
             input.actions["Jump"].canceled -= OnJump;
-
-            input.actions["Interact"].started -= OnInteract;
-            input.actions["Interact"].canceled -= OnInteract;
 
             input.actions["Dash"].started -= OnDash;
             input.actions["Dash"].canceled -= OnDash;
@@ -66,11 +58,6 @@ namespace Managers
         private void OnJump(InputAction.CallbackContext obj)
         {
             jumpInput = obj.ReadValue<float>() > 0.01f;
-        }
-
-        private void OnInteract(InputAction.CallbackContext obj)
-        {
-            interactInput = obj.ReadValue<float>() > 0.01f;
         }
 
         private void OnDash(InputAction.CallbackContext obj)

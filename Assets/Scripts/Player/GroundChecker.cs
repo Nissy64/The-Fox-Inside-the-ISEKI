@@ -4,16 +4,33 @@ namespace Player
 {
     public class GroundChecker : MonoBehaviour
     {
-        public static bool IsGround(Transform position, Vector2 size, LayerMask layer)
+		public Vector2 groundCheckSize;
+		public LayerMask groundLayer;
+        [ReadOnly]
+        public bool isGround;
+
+        public void IsGround()
         {
-            if(Physics2D.OverlapBox(position.position, size, 0, layer))
+            if(Physics2D.OverlapBox(transform.position, groundCheckSize, 0, groundLayer))
             {
-                return true;
+                isGround = true;
             }
             else
             {
-                return false;
+                isGround = false;
             }
+        }
+
+        void FixedUpdate()
+        {
+            IsGround();
+        }
+
+        void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.green;
+
+            Gizmos.DrawWireCube(transform.position, groundCheckSize);
         }
     }
 }

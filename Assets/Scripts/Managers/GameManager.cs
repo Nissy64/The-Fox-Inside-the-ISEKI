@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Burst;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -9,8 +10,10 @@ namespace Managers
     public class GameManager : MonoBehaviour
     {
         public Image silhouette;
-        [Range(0, 10)]
-        public float silhouetteScalingSpeed = 0.25f;
+        [Range(0, 2)]
+        public float startSilhouetteScalingSeconds = 1f;
+        [Range(0, 2)]
+        public float endSilhouetteScalingSeconds = 1f;
         public Ease endSilhouetteEase = Ease.InOutCubic;
         public Ease startSilhouetteEase = Ease.InOutCirc;
         private int defaultsilhouetteScale = 15000;
@@ -24,7 +27,7 @@ namespace Managers
 
         void Start()
         {
-            Invoke(nameof(StartGame), 0.5f);
+            Invoke(nameof(StartGame), 0.25f);
         }
 
         void Update()
@@ -35,18 +38,18 @@ namespace Managers
             }
         }
 
-        private IEnumerator GameOver()
-        {
-            silhouette.rectTransform.DOScale(Vector3.zero, silhouetteScalingSpeed).SetEase(endSilhouetteEase);
-
-            yield return new WaitForSeconds(silhouetteScalingSpeed);
-
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-
         private void StartGame()
         {
-            silhouette.rectTransform.DOScale(Vector3.one * defaultsilhouetteScale, silhouetteScalingSpeed).SetEase(startSilhouetteEase);
+            silhouette.rectTransform.DOScale(Vector3.one * defaultsilhouetteScale, startSilhouetteScalingSeconds).SetEase(startSilhouetteEase);
+        }
+
+        private IEnumerator GameOver()
+        {
+            silhouette.rectTransform.DOScale(Vector3.zero, endSilhouetteScalingSeconds).SetEase(endSilhouetteEase);
+
+            yield return new WaitForSeconds(endSilhouetteScalingSeconds);
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }
