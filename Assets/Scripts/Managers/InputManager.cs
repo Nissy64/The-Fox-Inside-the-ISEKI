@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 namespace Managers
 {
@@ -15,16 +16,16 @@ namespace Managers
         [ReadOnly]
         public float verticalInput;
 
+        void FixedUpdate()
+        {
+            dashInput = input.actions["Dash"].WasPressedThisFrame();
+            jumpInput = input.actions["Jump"].WasPressedThisFrame();
+        }
+
         void OnEnable()
         {
             input.actions["Move"].performed += OnMove;
             input.actions["Move"].canceled += OnMoveStop;
-
-            input.actions["Jump"].started += OnJump;
-            input.actions["Jump"].canceled += OnJump;
-
-            input.actions["Dash"].started += OnDash;
-            input.actions["Dash"].canceled += OnDash;
 
             input.actions["Vertical"].performed += OnVertical;
             input.actions["Vertical"].canceled += OnVerticalStop;
@@ -34,12 +35,6 @@ namespace Managers
         {
             input.actions["Move"].performed -= OnMove;
             input.actions["Move"].canceled -= OnMoveStop;
-
-            input.actions["Jump"].started -= OnJump;
-            input.actions["Jump"].canceled -= OnJump;
-
-            input.actions["Dash"].started -= OnDash;
-            input.actions["Dash"].canceled -= OnDash;
 
             input.actions["Vertical"].performed -= OnVertical;
             input.actions["Vertical"].canceled -= OnVerticalStop;
@@ -57,12 +52,7 @@ namespace Managers
 
         private void OnJump(InputAction.CallbackContext obj)
         {
-            jumpInput = obj.ReadValue<float>() > 0.01f;
-        }
-
-        private void OnDash(InputAction.CallbackContext obj)
-        {
-            dashInput = obj.ReadValue<float>() > 0.01f;
+            jumpInput = obj.ReadValue<float>() > 0;
         }
 
         private void OnVerticalStop(InputAction.CallbackContext obj)

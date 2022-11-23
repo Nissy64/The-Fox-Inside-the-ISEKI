@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using Managers;
 
 namespace Player 
@@ -28,10 +30,14 @@ namespace Player
 		public float playerFalloffMultiplier = 5;
 		public float playerJumpForce = 1;
 		public float coyoteTime = 0.2f;
+		[SerializeField, ReadOnly]
 		private float coyoteTimeCounter;
 		[Header("Check Ground")]
 		public GroundChecker groundChecker;
 		[Header("Energy")]
+		public Image[] energyUIs;
+		public Sprite emptyEnergy;
+		public Sprite glowingEnergy;
 		public int maxEnergy = 3;
 		public int dashConsumeEnergy = 1;
 		public float energyChargeCooldown = 2;
@@ -40,10 +46,9 @@ namespace Player
 		private float energyChargeCooldownCounter = 1;
 		[SerializeField, ReadOnly]
 		private int currentEnergey = 0;
+		private bool isNoEnergy = false;
 		[Header("Animation")]
 		public Animator animator;
-
-		private bool isNoEnergy = false;
 
 		void Awake()
 		{
@@ -51,12 +56,23 @@ namespace Player
 			currentEnergey = maxEnergy;
 			energyChargeCooldownCounter = ResetCooldownTimer(energyChargeCooldown);
 			animator.SetBool("IsGameOver", false);
+
+			foreach(Image eUI in energyUIs)
+			{
+				eUI.sprite = glowingEnergy;
+			}
 		}
 
 		void FixedUpdate()
 		{
-			if(coyoteTimeCounter > 0) canDash = true;
+			Movement();
 
+			CoyoteTimer();
+			if(coyoteTimeCounter > 0) canDash = true;
+		}
+
+		void Update()
+		{
 			if(currentEnergey == 0 && !isNoEnergy)
 			{
 				energyChargeCooldownCounter = ResetCooldownTimer(noEnergyChergeCooldown);
@@ -66,12 +82,10 @@ namespace Player
 			if(!(currentEnergey == maxEnergy)) energyChargeCooldownCounter = CoolTimer(energyChargeCooldownCounter);
 
 			ChargeEnergy();
+			EnergyUI();
 
 			if(!groundChecker.isGround) animator.SetFloat("Speed", 0);
 			else animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-
-			CoyoteTimer();
-			Movement();
 		}
 
 		private void Movement()
@@ -83,12 +97,6 @@ namespace Player
 
 			Run();
 
-			if(canDash && inputManager.dashInput && currentEnergey > 0)
-			{
-				StartDash();
-				StartCoroutine(StopDashing());
-			}
-
 			if(coyoteTimeCounter > 0)
 			{
 				animator.SetBool("IsJumping", false);
@@ -96,8 +104,16 @@ namespace Player
 
 				if(inputManager.jumpInput)
 				{
+					coyoteTimeCounter = 0;
+					animator.SetBool("IsJumping", true);
 					Jump();
 				}
+			}
+
+			if(canDash && inputManager.dashInput && currentEnergey > 0)
+			{
+				StartDash();
+				StartCoroutine(StopDashing());
 			}
 
 			if(rb.velocity.y > 5)
@@ -105,7 +121,7 @@ namespace Player
 				animator.SetBool("IsJumping", true);
 			}
 
-			if(coyoteTimeCounter > 0f) return;
+			if(coyoteTimeCounter > 0) return;
 			if(rb.velocity.y > 0)
 			{
 				JumpFalloff();
@@ -250,6 +266,21 @@ namespace Player
 				{
 					currentEnergey += 1;
 					energyChargeCooldownCounter = ResetCooldownTimer(energyChargeCooldown);
+				}
+			}
+		}
+
+		private void EnergyUI()
+		{
+			foreach(Image eUI in energyUIs)
+			{
+				if(int.Parse(eUI.name.Substring(7)) == currentEnergey)
+				{
+					eUI.sprite = emptyEnergy;
+				}
+				else if(int.Parse(eUI.name.Substring(7)) < currentEnergey)
+				{
+					eUI.sprite = glowingEnergy;
 				}
 			}
 		}
