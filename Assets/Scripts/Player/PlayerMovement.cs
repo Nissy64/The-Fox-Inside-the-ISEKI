@@ -22,10 +22,10 @@ namespace Player
 		public TrailRenderer trail;
 		public float dashingPower = 24;
 		public float dashingTime = 0.2f;
-		public float dashCooldown = 1f;
-		private float dashCooldownCounter = 1f;
-		private bool canDash = true;
-		private bool isDashing;
+		[ReadOnly]
+		public bool canDash = true;
+		[ReadOnly]
+		public bool isDashing;
 		[Header("Jump")]
 		public float playerFalloffMultiplier = 5;
 		public float playerJumpForce = 1;
@@ -68,6 +68,7 @@ namespace Player
 			Movement();
 
 			CoyoteTimer();
+
 			if(coyoteTimeCounter > 0) canDash = true;
 		}
 
@@ -110,7 +111,7 @@ namespace Player
 				}
 			}
 
-			if(canDash && inputManager.dashInput && currentEnergey > 0)
+			if(canDash && inputManager.dashInput && !isNoEnergy)
 			{
 				StartDash();
 				StartCoroutine(StopDashing());
@@ -160,6 +161,11 @@ namespace Player
 			{
 				coyoteTimeCounter -= Time.deltaTime;
 			}
+
+			if(isDashing)
+			{
+				coyoteTimeCounter = 0;
+			}
 		}
 
 		private void FlipSprite()
@@ -194,6 +200,7 @@ namespace Player
 				animator.SetBool("IsJumping", false);
 				animator.SetBool("IsDashing", true);
 				currentEnergey -= dashConsumeEnergy;
+				coyoteTimeCounter = 0;
 				canDash = false;
 				return;
 			}
@@ -204,7 +211,6 @@ namespace Player
 			yield return new WaitForSeconds(dashingTime);
 			isDashing = false;
 			trail.emitting = false;
-			dashCooldownCounter = ResetCooldownTimer(dashCooldown);
 		}
 
 		private float CoolTimer(float cooldownCounter)
