@@ -8,6 +8,7 @@ namespace Objects
     public class PressRock : MonoBehaviour
     {
         public Transform pressRockTransform;
+        public BoxCollider2D armCollider2D;
         public string pressEndRockPositionIcon;
         [ReadOnly]
         public float startPressRockPosition;
@@ -22,6 +23,7 @@ namespace Objects
         public LayerMask playerLayer;
         [ReadOnly]
         public bool isPressing;
+        [Range(8, 32)]
         public int pressRockHeight = 8;
 
         void Start()

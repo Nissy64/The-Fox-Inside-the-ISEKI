@@ -81,7 +81,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
-  m_Size: {x: 8, y: 20}
+  m_Size: {x: 8, y: 24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -100,18 +100,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 11.44873}
+  m_Offset: {x: 0, y: 13.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 4, z: 0, w: 2}
     pivot: {x: 0.5, y: 0}
     oldSize: {x: 8, y: 8}
-    newSize: {x: 8, y: 20}
+    newSize: {x: 8, y: 24}
     adaptiveTilingThreshold: 0.5
     drawMode: 2
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.875, y: 17.097462}
+  m_Size: {x: 3.875, y: 21}
   m_EdgeRadius: 0
 --- !u!61 &2339126298694911969
 BoxCollider2D:
@@ -131,7 +131,7 @@ BoxCollider2D:
     border: {x: 0, y: 4, z: 0, w: 2}
     pivot: {x: 0.5, y: 0}
     oldSize: {x: 8, y: 8}
-    newSize: {x: 8, y: 20}
+    newSize: {x: 8, y: 24}
     adaptiveTilingThreshold: 0.5
     drawMode: 2
     adaptiveTiling: 0
@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pressRockTransform: {fileID: 2339126298694911972}
+  armCollider2D: {fileID: 2339126298694911970}
   pressEndRockPositionIcon: PressedRockPosition.png
   startPressRockPosition: 0
   endPressRockPosition: -2
@@ -166,4 +167,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isPressing: 0
-  pressRockHeight: 20
+  pressRockHeight: 24
