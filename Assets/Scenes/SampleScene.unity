@@ -1594,6 +1594,7 @@ MonoBehaviour:
   playerTransform: {fileID: 814743528}
   mpRb: {fileID: 1434586312}
   playerRb: {fileID: 814743529}
+  mpAnimator: {fileID: 1434586310}
   playerTag: Player
   startMpPosition: 0
   endMpPosition: 3

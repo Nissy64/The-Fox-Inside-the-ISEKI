@@ -11,6 +11,7 @@ namespace Objects
         public Transform playerTransform;
         public Rigidbody2D mpRb;
         public Rigidbody2D playerRb;
+        public Animator mpAnimator;
         public string playerTag;
         [ReadOnly] public float startMpPosition = 0;
         public float endMpPosition;
@@ -72,7 +73,11 @@ namespace Objects
 
         private IEnumerator MoveStart()
         {
+            mpAnimator.SetBool("UpToDown", true);
+
             yield return new WaitForSeconds(mpWaitSecond);
+
+            mpAnimator.SetBool("UpToDown", false);
 
             mpRb.DOMove(new Vector2(mpTransform.position.x, endMpPosition), mpDuration)
                 .SetEase(Ease.InOutSine)
@@ -84,7 +89,11 @@ namespace Objects
 
         private IEnumerator MoveEnd()
         {
+            mpAnimator.SetBool("DownToUp", true);
+
             yield return new WaitForSeconds(mpWaitSecond);
+
+            mpAnimator.SetBool("DownToUp", false);
 
             mpRb.DOMove(new Vector2(mpTransform.position.x, startMpPosition), mpDuration)
                 .SetEase(Ease.InOutSine)
@@ -101,8 +110,6 @@ namespace Objects
             var position = mpTransform.position;
 
             mpVelocity = (position - prevPosition) / Time.deltaTime;
-
-            print(mpVelocity);
 
             prevPosition = position;
         }
