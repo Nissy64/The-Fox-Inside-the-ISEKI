@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using DG.Tweening;
 using Player;
+using Managers;
 
 namespace Objects
 {
@@ -9,7 +10,7 @@ namespace Objects
     {
         public Transform pressRockTransform;
         public BoxCollider2D armCollider2D;
-        public string pressEndRockPositionIcon;
+        public FolderManager.GizmosFiles pressEndRockPositionIcon;
         [ReadOnly]
         public float startPressRockPosition;
         public float endPressRockPosition;
@@ -39,7 +40,7 @@ namespace Objects
 
         void OnDrawGizmosSelected()
         {
-            Gizmos.DrawIcon(new Vector3(pressRockTransform.position.x, endPressRockPosition, pressRockTransform.position.z), pressEndRockPositionIcon, true);
+            Gizmos.DrawIcon(new Vector3(pressRockTransform.position.x, endPressRockPosition, pressRockTransform.position.z), FolderManager.GetGizmosFiles(pressEndRockPositionIcon), true);
 
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(pressRockTransform.position, pressAreaSize);
@@ -64,10 +65,12 @@ namespace Objects
         private void PressStart()
         {
             isPressing = true;
-            pressRockTransform.DOLocalMoveY(endPressRockPosition, startPressRockDuration).SetEase(startPressRockEase).OnComplete(() =>
-            {
-                StartCoroutine(PressEnd());
-            });
+            pressRockTransform.DOLocalMoveY(endPressRockPosition, startPressRockDuration)
+                .SetEase(startPressRockEase)
+                .OnComplete(() =>
+                {
+                    StartCoroutine(PressEnd());
+                });
         }
 
         private IEnumerator PressEnd()
@@ -75,10 +78,12 @@ namespace Objects
             isPressing = false;
             yield return new WaitForSeconds(pressedRockWaitSecond);
 
-            pressRockTransform.DOLocalMoveY(startPressRockPosition, endPressRockDuration).SetEase(endPressRockEase).OnComplete(() =>
-            {
-                PressStart();
-            });
+            pressRockTransform.DOLocalMoveY(startPressRockPosition, endPressRockDuration)
+                .SetEase(endPressRockEase)
+                .OnComplete(() =>
+                {
+                    PressStart();
+                });
         }
     }
 }

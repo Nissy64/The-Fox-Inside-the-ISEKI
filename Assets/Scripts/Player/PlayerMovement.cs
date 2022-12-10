@@ -117,7 +117,7 @@ namespace Player
 				StartCoroutine(StopDashing());
 			}
 
-			if(rb.velocity.y > 5)
+			if(rb.velocity.y > 8f && coyoteTimeCounter > 0)
 			{
 				animator.SetBool("IsJumping", true);
 			}

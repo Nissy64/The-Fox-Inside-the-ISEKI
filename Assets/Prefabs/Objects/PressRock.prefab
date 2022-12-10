@@ -153,7 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pressRockTransform: {fileID: 2339126298694911972}
   armCollider2D: {fileID: 2339126298694911970}
-  pressEndRockPositionIcon: PressedRockPosition.png
+  pressEndRockPositionIcon: Position 1.png
   startPressRockPosition: 0
   endPressRockPosition: -2
   startPressRockDuration: 1
