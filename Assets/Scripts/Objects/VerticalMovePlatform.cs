@@ -13,13 +13,15 @@ namespace Objects
         public Rigidbody2D playerRb;
         public Animator mpAnimator;
         public string playerTag;
-        [ReadOnly] public float startMpPosition = 0;
+        [ReadOnly] 
+        public float startMpPosition = 0;
         public float endMpPosition;
         public FolderManager.GizmosFiles startMpPositionIcon;
         public FolderManager.GizmosFiles endMpPositionIcon;
         public float mpDuration = 2;
         public int mpWaitSecond = 1;
-        [Range(1, 100)] public float downdingForceMultiply = 50;
+        [Range(1, 100)] 
+        public float downdingForceMultiply = 50;
         private Vector3 prevPosition;
         private Vector3 mpVelocity;
         private bool playerOnMp = false;

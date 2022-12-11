@@ -8,9 +8,13 @@ namespace Player
 {
 	public class PlayerMovement : MonoBehaviour
 	{
+		#region Managers
 		[Header("Managers")]
 		public GameManager gameManager;
 		public InputManager inputManager;
+		#endregion
+
+		#region Run
 		[Header("Run")]
 		public Transform playerTransform;
 		public Rigidbody2D rb;
@@ -18,6 +22,9 @@ namespace Player
 		public float acceleration;
 		public float decceleration;
 		public float velPower;
+		#endregion
+
+		#region Dash
 		[Header("Dash")]
 		public TrailRenderer trail;
 		public float dashingPower = 24;
@@ -26,41 +33,31 @@ namespace Player
 		public bool canDash = true;
 		[ReadOnly]
 		public bool isDashing;
+		#endregion
+
+		#region Jump
 		[Header("Jump")]
 		public float playerFalloffMultiplier = 5;
 		public float playerJumpForce = 1;
 		public float coyoteTime = 0.2f;
 		[SerializeField, ReadOnly]
 		private float coyoteTimeCounter;
+		#endregion
+
+		#region CheckGround
 		[Header("Check Ground")]
 		public GroundChecker groundChecker;
-		[Header("Energy")]
-		public Image[] energyUIs;
-		public Sprite emptyEnergy;
-		public Sprite glowingEnergy;
-		public int maxEnergy = 3;
-		public int dashConsumeEnergy = 1;
-		public float energyChargeCooldown = 2;
-		public float noEnergyChergeCooldown = 5;
-		[SerializeField, ReadOnly]
-		private float energyChargeCooldownCounter = 1;
-		[SerializeField, ReadOnly]
-		private int currentEnergey = 0;
-		private bool isNoEnergy = false;
+		#endregion
+
+		#region Animation
 		[Header("Animation")]
 		public Animator animator;
+		#endregion
 
 		void Awake()
 		{
 			canDash = true;
-			currentEnergey = maxEnergy;
-			energyChargeCooldownCounter = ResetCooldownTimer(energyChargeCooldown);
 			animator.SetBool("IsGameOver", false);
-
-			foreach(Image eUI in energyUIs)
-			{
-				eUI.sprite = glowingEnergy;
-			}
 		}
 
 		void FixedUpdate()
@@ -68,23 +65,10 @@ namespace Player
 			Movement();
 
 			CoyoteTimer();
-
-			if(coyoteTimeCounter > 0) canDash = true;
 		}
 
 		void Update()
 		{
-			if(currentEnergey == 0 && !isNoEnergy)
-			{
-				energyChargeCooldownCounter = ResetCooldownTimer(noEnergyChergeCooldown);
-				isNoEnergy = true;
-			}
-
-			if(!(currentEnergey == maxEnergy)) energyChargeCooldownCounter = CoolTimer(energyChargeCooldownCounter);
-
-			ChargeEnergy();
-			EnergyUI();
-
 			if(!groundChecker.isGround) animator.SetFloat("Speed", 0);
 			else animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
 		}
@@ -102,6 +86,7 @@ namespace Player
 			{
 				animator.SetBool("IsJumping", false);
 				animator.SetBool("IsDashing", false);
+				canDash = true;
 
 				if(inputManager.jumpInput)
 				{
@@ -111,7 +96,7 @@ namespace Player
 				}
 			}
 
-			if(canDash && inputManager.dashInput && !isNoEnergy)
+			if(canDash && inputManager.dashInput)
 			{
 				StartDash();
 				StartCoroutine(StopDashing());
@@ -189,17 +174,26 @@ namespace Player
 			trail.emitting = true;
 			Vector2 dashingDirection = new Vector2(inputManager.moveInput, inputManager.verticalInput);
 
+			if(inputManager.moveInput == 0 && inputManager.verticalInput != 0)
+			{
+				dashingDirection = new Vector2(inputManager.moveInput, inputManager.verticalInput);
+			}
+			else if(inputManager.moveInput != 0 && inputManager.verticalInput == 0)
+			{
+				dashingDirection = new Vector2(inputManager.moveInput, 0.5f);
+			}
+
 			if(dashingDirection == Vector2.zero || dashingDirection.y == -1)
 			{
-				dashingDirection = new Vector2(GetDirection(), 0);
+				dashingDirection = new Vector2(GetDirection01(), 0.5f);
 			}
 
 			if(isDashing)
 			{
 				rb.velocity = dashingDirection.normalized * dashingPower;
+
 				animator.SetBool("IsJumping", false);
 				animator.SetBool("IsDashing", true);
-				currentEnergey -= dashConsumeEnergy;
 				coyoteTimeCounter = 0;
 				canDash = false;
 				return;
@@ -213,7 +207,7 @@ namespace Player
 			trail.emitting = false;
 		}
 
-		private float CoolTimer(float cooldownCounter)
+		private float CooldownTimer(float cooldownCounter)
 		{
 			if(cooldownCounter > 0)
 			{
@@ -233,7 +227,7 @@ namespace Player
 			return cooldown;
 		}
 
-		private int GetDirection()
+		private int GetDirection01()
 		{
 			int direction = 1;
 			Vector3 facingRight = Vector3.zero;
@@ -260,35 +254,6 @@ namespace Player
 			yield return new WaitForSeconds(0.25f);
 
 			gameManager.isGameOver = true;
-		}
-
-		private void ChargeEnergy()
-		{
-			if(energyChargeCooldownCounter == 0)
-			{
-				isNoEnergy = false;
-
-				if(currentEnergey < maxEnergy)
-				{
-					currentEnergey += 1;
-					energyChargeCooldownCounter = ResetCooldownTimer(energyChargeCooldown);
-				}
-			}
-		}
-
-		private void EnergyUI()
-		{
-			foreach(Image eUI in energyUIs)
-			{
-				if(int.Parse(eUI.name.Substring(7)) == currentEnergey)
-				{
-					eUI.sprite = emptyEnergy;
-				}
-				else if(int.Parse(eUI.name.Substring(7)) < currentEnergey)
-				{
-					eUI.sprite = glowingEnergy;
-				}
-			}
 		}
 	}
 }
