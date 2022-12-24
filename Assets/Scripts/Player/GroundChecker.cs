@@ -4,9 +4,9 @@ namespace Player
 {
     public class GroundChecker : MonoBehaviour
     {
-		public Transform groundCheckerTransform;
+        public Transform groundCheckerTransform;
         public Vector2 groundCheckSize;
-		public LayerMask groundLayer;
+        public LayerMask groundLayer;
         [ReadOnly]
         public bool isGround;
 

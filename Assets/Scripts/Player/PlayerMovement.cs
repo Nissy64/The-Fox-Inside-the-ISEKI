@@ -1,259 +1,272 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
+using Objects;
 using Managers;
 
 namespace Player 
 {
-	public class PlayerMovement : MonoBehaviour
-	{
-		#region Managers
-		[Header("Managers")]
-		public GameManager gameManager;
-		public InputManager inputManager;
-		#endregion
+    public class PlayerMovement : MonoBehaviour
+    {
+        #region Managers
+        [Header("Managers")]
+        public GameManager gameManager;
+        public InputManager inputManager;
+        #endregion
 
-		#region Run
-		[Header("Run")]
-		public Transform playerTransform;
-		public Rigidbody2D rb;
-		public float palyerSpeed = 5;
-		public float acceleration;
-		public float decceleration;
-		public float velPower;
-		#endregion
+        #region Run
+        [Header("Run")]
+        public Transform playerTransform;
+        public Rigidbody2D rb;
+        public float palyerSpeed = 5;
+        public float acceleration;
+        public float decceleration;
+        public float velPower;
+        #endregion
 
-		#region Dash
-		[Header("Dash")]
-		public TrailRenderer trail;
-		public float dashingPower = 24;
-		public float dashingTime = 0.2f;
-		[ReadOnly]
-		public bool canDash = true;
-		[ReadOnly]
-		public bool isDashing;
-		#endregion
+        #region Dash
+        [Header("Dash")]
+        public TrailRenderer trail;
+        public float dashingPower = 24;
+        public float dashingTime = 0.2f;
+        [ReadOnly]
+        public bool canDash = true;
+        [ReadOnly]
+        public bool isDashing;
+        #endregion
 
-		#region Jump
-		[Header("Jump")]
-		public float playerFalloffMultiplier = 5;
-		public float playerJumpForce = 1;
-		public float coyoteTime = 0.2f;
-		[SerializeField, ReadOnly]
-		private float coyoteTimeCounter;
-		#endregion
+        #region Jump
+        [Header("Jump")]
+        public float playerFalloffMultiplier = 5;
+        public float playerJumpForce = 1;
+        public float coyoteTime = 0.2f;
+        [SerializeField, ReadOnly]
+        private float coyoteTimeCounter;
+        #endregion
 
-		#region CheckGround
-		[Header("Check Ground")]
-		public GroundChecker groundChecker;
-		#endregion
+        #region CheckGround
+        [Header("Check Ground")]
+        public GroundChecker groundChecker;
+        private HorizontalMovePlatform currentHorizontalMp;
+        #endregion
 
-		#region Animation
-		[Header("Animation")]
-		public Animator animator;
-		#endregion
+        #region Animation
+        [Header("Animation")]
+        public Animator animator;
+        #endregion
 
-		void Awake()
-		{
-			canDash = true;
-			animator.SetBool("IsGameOver", false);
-		}
+        void Awake()
+        {
+            canDash = true;
+            animator.SetBool("IsGameOver", false);
+        }
 
-		void FixedUpdate()
-		{
-			Movement();
+        void FixedUpdate()
+        {
+            Movement();
 
-			CoyoteTimer();
-		}
+            CoyoteTimer();
+        }
 
-		void Update()
-		{
-			if(!groundChecker.isGround) animator.SetFloat("Speed", 0);
-			else animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-		}
+        void Update()
+        {
+            GetHorizontalMp();
 
-		private void Movement()
-		{
-			if(gameManager.isGameOver) return;
-			if(isDashing) return;
+            if(!groundChecker.isGround) animator.SetFloat("Speed", 0);
+            else animator.SetFloat("Speed", Mathf.Abs(inputManager.moveInput));
+        }
 
-			FlipSprite();
+        private void Movement()
+        {
+            if(gameManager.isGameOver) return;
+            if(isDashing) return;
 
-			Run();
+            FlipSprite();
 
-			if(coyoteTimeCounter > 0)
-			{
-				animator.SetBool("IsJumping", false);
-				animator.SetBool("IsDashing", false);
-				canDash = true;
+            Run();
 
-				if(inputManager.jumpInput)
-				{
-					coyoteTimeCounter = 0;
-					animator.SetBool("IsJumping", true);
-					Jump();
-				}
-			}
+            if(coyoteTimeCounter > 0)
+            {
+                animator.SetBool("IsJumping", false);
+                animator.SetBool("IsDashing", false);
+                canDash = true;
 
-			if(canDash && inputManager.dashInput)
-			{
-				StartDash();
-				StartCoroutine(StopDashing());
-			}
+                if(inputManager.jumpInput)
+                {
+                    coyoteTimeCounter = 0;
+                    animator.SetBool("IsJumping", true);
+                    Jump();
+                }
+            }
 
-			if(rb.velocity.y > 8f && coyoteTimeCounter > 0)
-			{
-				animator.SetBool("IsJumping", true);
-			}
+            if(canDash && inputManager.dashInput)
+            {
+                StartDash();
+                StartCoroutine(StopDashing());
+            }
 
-			if(coyoteTimeCounter > 0) return;
-			if(rb.velocity.y > 0)
-			{
-				JumpFalloff();
-			}
-		}
+            if(rb.velocity.y > 8f && coyoteTimeCounter > 0)
+            {
+                animator.SetBool("IsJumping", true);
+            }
 
-		private void Run()
-		{
-			float targetSpeed = inputManager.moveInput * palyerSpeed;
-			float speedDif = targetSpeed - rb.velocity.x;
-			float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration;
-			float movement = Mathf.Pow(Mathf.Abs(speedDif) * accelRate, velPower) * Mathf.Sign(speedDif);
+            if(coyoteTimeCounter > 0) return;
+            if(rb.velocity.y > 0)
+            {
+                JumpFalloff();
+            }
+        }
 
-			rb.AddForce(movement * Vector2.right);
-		}
+        private void Run()
+        {
+            float targetSpeed = inputManager.moveInput * palyerSpeed;
+            float speedDif = targetSpeed - rb.velocity.x;
+            float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : decceleration;
+            float movement = Mathf.Pow(Mathf.Abs(speedDif) * accelRate, velPower) * Mathf.Sign(speedDif);
 
-		public void Jump()
-		{
-			rb.velocity = Vector2.up * playerJumpForce;
+            rb.AddForce(movement * Vector2.right);
+        }
 
-			coyoteTimeCounter = 0;
-		}
+        public void Jump()
+        {
+            rb.velocity = Vector2.up * playerJumpForce;
 
-		private void JumpFalloff()
-		{
-			rb.velocity += Vector2.up * Physics2D.gravity.y * playerFalloffMultiplier * Time.deltaTime;
-		}
+            coyoteTimeCounter = 0;
+        }
 
-		private void CoyoteTimer()
-		{
-			if(groundChecker.isGround)
-			{
-				coyoteTimeCounter = coyoteTime;
-			}
-			else
-			{
-				coyoteTimeCounter -= Time.deltaTime;
-			}
+        private void JumpFalloff()
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * playerFalloffMultiplier * Time.deltaTime;
+        }
 
-			if(isDashing)
-			{
-				coyoteTimeCounter = 0;
-			}
-		}
+        private void CoyoteTimer()
+        {
+            if(groundChecker.isGround)
+            {
+                coyoteTimeCounter = coyoteTime;
+            }
+            else
+            {
+                coyoteTimeCounter -= Time.deltaTime;
+            }
 
-		private void FlipSprite()
-		{
-			Vector3 facingRight = Vector3.zero;
-			Vector3 facingLeft = Vector3.up * 180;
+            if(isDashing)
+            {
+                coyoteTimeCounter = 0;
+            }
+        }
 
-			if(inputManager.moveInput > 0)
-			{
-				playerTransform.eulerAngles = facingRight;
-			}
-			if(inputManager.moveInput < 0)
-			{
-				playerTransform.eulerAngles = facingLeft;
-			}
-		}
+        private void FlipSprite()
+        {
+            Vector3 facingRight = Vector3.zero;
+            Vector3 facingLeft = Vector3.up * 180;
 
-		private void StartDash()
-		{
-			isDashing = true;
-			trail.emitting = true;
-			Vector2 dashingDirection = new Vector2(inputManager.moveInput, inputManager.verticalInput);
+            if(inputManager.moveInput > 0)
+            {
+                playerTransform.eulerAngles = facingRight;
+            }
+            if(inputManager.moveInput < 0)
+            {
+                playerTransform.eulerAngles = facingLeft;
+            }
+        }
 
-			if(inputManager.moveInput == 0 && inputManager.verticalInput != 0)
-			{
-				dashingDirection = new Vector2(inputManager.moveInput, inputManager.verticalInput);
-			}
-			else if(inputManager.moveInput != 0 && inputManager.verticalInput == 0)
-			{
-				dashingDirection = new Vector2(inputManager.moveInput, 0.5f);
-			}
+        private void StartDash()
+        {
+            isDashing = true;
+            trail.emitting = true;
+            Vector2 dashingDirection = new Vector2(inputManager.moveInput, inputManager.verticalInput);
 
-			if(dashingDirection == Vector2.zero || dashingDirection.y == -1)
-			{
-				dashingDirection = new Vector2(GetDirection01(), 0.5f);
-			}
+            if(inputManager.moveInput == 0 && inputManager.verticalInput != 0)
+            {
+                dashingDirection = new Vector2(inputManager.moveInput, inputManager.verticalInput);
+            }
+            else if(inputManager.moveInput != 0 && inputManager.verticalInput == 0)
+            {
+                dashingDirection = new Vector2(inputManager.moveInput, 0.5f);
+            }
 
-			if(isDashing)
-			{
-				rb.velocity = dashingDirection.normalized * dashingPower;
+            if(dashingDirection == Vector2.zero || dashingDirection.y == -1)
+            {
+                dashingDirection = new Vector2(GetDirection01(), 0.5f);
+            }
 
-				animator.SetBool("IsJumping", false);
-				animator.SetBool("IsDashing", true);
-				coyoteTimeCounter = 0;
-				canDash = false;
-				return;
-			}
-		}
+            if(isDashing)
+            {
+                rb.velocity = dashingDirection.normalized * dashingPower;
 
-		private IEnumerator StopDashing()
-		{
-			yield return new WaitForSeconds(dashingTime);
-			isDashing = false;
-			trail.emitting = false;
-		}
+                animator.SetBool("IsJumping", false);
+                animator.SetBool("IsDashing", true);
+                coyoteTimeCounter = 0;
+                canDash = false;
+                return;
+            }
+        }
 
-		private float CooldownTimer(float cooldownCounter)
-		{
-			if(cooldownCounter > 0)
-			{
-				cooldownCounter -= Time.deltaTime;
-			}
+        private IEnumerator StopDashing()
+        {
+            yield return new WaitForSeconds(dashingTime);
+            isDashing = false;
+            trail.emitting = false;
+        }
 
-			if(cooldownCounter < 0)
-			{
-				cooldownCounter = 0;
-			}
+        private float CooldownTimer(float cooldownCounter)
+        {
+            if(cooldownCounter > 0)
+            {
+                cooldownCounter -= Time.deltaTime;
+            }
 
-			return cooldownCounter;
-		}
+            if(cooldownCounter < 0)
+            {
+                cooldownCounter = 0;
+            }
 
-		private float ResetCooldownTimer(float cooldown)
-		{
-			return cooldown;
-		}
+            return cooldownCounter;
+        }
 
-		private int GetDirection01()
-		{
-			int direction = 1;
-			Vector3 facingRight = Vector3.zero;
-			Vector3 facingLeft = Vector3.up * 180;
+        private float ResetCooldownTimer(float cooldown)
+        {
+            return cooldown;
+        }
 
-			if(playerTransform.eulerAngles == facingRight)
-			{
-				direction = 1;
-			}
+        private int GetDirection01()
+        {
+            int direction = 1;
+            Vector3 facingRight = Vector3.zero;
+            Vector3 facingLeft = Vector3.up * 180;
 
-			if(playerTransform.eulerAngles == facingLeft)
-			{
-				direction = -1;
-			}
+            if(playerTransform.eulerAngles == facingRight)
+            {
+                direction = 1;
+            }
 
-			return direction;
-		}
+            if(playerTransform.eulerAngles == facingLeft)
+            {
+                direction = -1;
+            }
 
-		public IEnumerator PlayerGameOver()
-		{
-			rb.simulated = false;
-			animator.SetBool("IsGameOver", true);
+            return direction;
+        }
 
-			yield return new WaitForSeconds(0.25f);
+        public IEnumerator PlayerGameOver()
+        {
+            rb.simulated = false;
+            animator.SetBool("IsGameOver", true);
 
-			gameManager.isGameOver = true;
-		}
-	}
+            yield return new WaitForSeconds(0.25f);
+
+            gameManager.isGameOver = true;
+        }
+
+        private void GetHorizontalMp()
+        {
+            Collider2D[] horizontalMps = Physics2D.OverlapBoxAll(groundChecker.groundCheckerTransform.position, groundChecker.groundCheckSize, 0, groundChecker.groundLayer);
+
+            foreach(Collider2D hMp in horizontalMps)
+            {
+                currentHorizontalMp = hMp.GetComponent<HorizontalMovePlatform>();
+            }
+        }
+    }
 }

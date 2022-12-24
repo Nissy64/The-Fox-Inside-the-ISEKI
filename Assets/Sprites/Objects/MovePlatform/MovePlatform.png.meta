@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c2b35459b27e14c468d858558e074115
+guid: bdc7926b37feed14eaa78138abcde3f1
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -42,11 +42,11 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 0
-  alignment: 9
-  spritePivot: {x: 0.375, y: 0.875}
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
@@ -105,7 +105,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: VerticalMovePlatform_0
+      name: HorizontalMovePlatform_0
       rect:
         serializedVersion: 2
         x: 0
@@ -119,14 +119,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 064f1b58fc2c97543bef72a8f8bc224e
-      internalID: 1473887135
+      spriteID: b5250bc3a4288964b915fdb09627bfb8
+      internalID: 1342628267
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: VerticalMovePlatform_1
+      name: HorizontalMovePlatform_1
       rect:
         serializedVersion: 2
         x: 0
@@ -140,14 +140,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4e7ec12cd79675b4bab6710c6e3c0ecc
-      internalID: -1965341440
+      spriteID: e5600750c90076f40b231d2d1443bc16
+      internalID: -1842379525
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: VerticalMovePlatform_2
+      name: HorizontalMovePlatform_2
       rect:
         serializedVersion: 2
         x: 0
@@ -161,14 +161,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9f19a26257eb9ab4eb8a7a35df27fef9
-      internalID: 173418539
+      spriteID: 16c81119cf9603f4ea9cedff4b7e2468
+      internalID: 1696864227
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: VerticalMovePlatform_3
+      name: HorizontalMovePlatform_3
       rect:
         serializedVersion: 2
         x: 0
@@ -182,14 +182,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5fc6fd64fadb6f248b397f8b7699abfb
-      internalID: 1361254913
+      spriteID: 862d27b2d7dcf824a8a062d663cab13e
+      internalID: -1051136055
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: VerticalMovePlatform_4
+      name: HorizontalMovePlatform_4
       rect:
         serializedVersion: 2
         x: 0
@@ -203,14 +203,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2607bc0a65197534ea4d36d544e88418
-      internalID: 248424878
+      spriteID: 7090bb1bb16fd494cb1d5f013df1da92
+      internalID: 1132190879
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: VerticalMovePlatform_5
+      name: HorizontalMovePlatform_5
       rect:
         serializedVersion: 2
         x: 0
@@ -224,14 +224,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4405c34b9d1aa044f9ba0c3977eafd1f
-      internalID: -873660247
+      spriteID: 7c99d40b3c8e53c45ad4147426da52f2
+      internalID: -1321929765
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: VerticalMovePlatform_6
+      name: HorizontalMovePlatform_6
       rect:
         serializedVersion: 2
         x: 0
@@ -245,8 +245,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 414a75da39797fc459e126dc8e0281bb
-      internalID: 260056654
+      spriteID: 54128eb4377aa1749b3202ce2791101b
+      internalID: -1685591259
       vertices: []
       indices: 
       edges: []
@@ -255,20 +255,20 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      VerticalMovePlatform_3: 1361254913
-      VerticalMovePlatform_2: 173418539
-      VerticalMovePlatform_4: 248424878
-      VerticalMovePlatform_1: -1965341440
-      VerticalMovePlatform_6: 260056654
-      VerticalMovePlatform_0: 1473887135
-      VerticalMovePlatform_5: -873660247
+      HorizontalMovePlatform_5: -1321929765
+      HorizontalMovePlatform_2: 1696864227
+      HorizontalMovePlatform_3: -1051136055
+      HorizontalMovePlatform_1: -1842379525
+      HorizontalMovePlatform_4: 1132190879
+      HorizontalMovePlatform_0: 1342628267
+      HorizontalMovePlatform_6: -1685591259
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
