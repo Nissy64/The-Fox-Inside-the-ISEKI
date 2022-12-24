@@ -28,5 +28,25 @@ namespace Managers
         {
             deltaTimer += Time.deltaTime;
         }
+
+        public float CooldownTimer(float cooldownCounter)
+        {
+            if(cooldownCounter > 0)
+            {
+                cooldownCounter -= Time.deltaTime;
+            }
+
+            if(cooldownCounter < 0)
+            {
+                cooldownCounter = 0;
+            }
+
+            return cooldownCounter;
+        }
+
+        public float ResetCooldownTimer(float cooldown)
+        {
+            return cooldown;
+        }
     }
 }

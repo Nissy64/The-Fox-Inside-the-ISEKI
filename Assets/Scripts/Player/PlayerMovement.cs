@@ -39,15 +39,18 @@ namespace Player
         [Header("Jump")]
         public float playerFalloffMultiplier = 5;
         public float playerJumpForce = 1;
+        public float palyerAirJumpForceMultiplier = 2;
         public float coyoteTime = 0.2f;
-        [SerializeField, ReadOnly]
-        private float coyoteTimeCounter;
+        [ReadOnly]
+        public float coyoteTimeCounter;
+        public float jumpBufferTime = 0.2f;
+        [ReadOnly]
+        public float jumpBufferCounter = 0;
         #endregion
 
         #region CheckGround
         [Header("Check Ground")]
         public GroundChecker groundChecker;
-        private HorizontalMovePlatform currentHorizontalMp;
         #endregion
 
         #region Animation
@@ -70,8 +73,6 @@ namespace Player
 
         void Update()
         {
-            GetHorizontalMp();
-
             if(!groundChecker.isGround) animator.SetFloat("Speed", 0);
             else animator.SetFloat("Speed", Mathf.Abs(inputManager.moveInput));
         }
@@ -85,17 +86,25 @@ namespace Player
 
             Run();
 
+            if(inputManager.jumpInput)
+            {
+                jumpBufferCounter = jumpBufferTime;
+            }
+            else
+            {
+                jumpBufferCounter -= Time.deltaTime;
+            }
+
             if(coyoteTimeCounter > 0)
             {
                 animator.SetBool("IsJumping", false);
                 animator.SetBool("IsDashing", false);
                 canDash = true;
 
-                if(inputManager.jumpInput)
+                if(jumpBufferCounter > 0)
                 {
-                    coyoteTimeCounter = 0;
-                    animator.SetBool("IsJumping", true);
                     Jump();
+                    animator.SetBool("IsJumping", true);
                 }
             }
 
@@ -110,10 +119,12 @@ namespace Player
                 animator.SetBool("IsJumping", true);
             }
 
-            if(coyoteTimeCounter > 0) return;
-            if(rb.velocity.y > 0)
+            if(coyoteTimeCounter <= 0)
             {
-                JumpFalloff();
+                if(rb.velocity.y > 0)
+                {
+                    JumpFalloff();
+                }
             }
         }
 
@@ -129,9 +140,21 @@ namespace Player
 
         public void Jump()
         {
-            rb.velocity = Vector2.up * playerJumpForce;
+            float multiplier = 1;
+
+            if(groundChecker.isGround)
+            {
+                multiplier = 1;
+            }
+            else
+            {
+                multiplier *= palyerAirJumpForceMultiplier;
+            }
+
+            rb.velocity = Vector2.up * playerJumpForce * multiplier;
 
             coyoteTimeCounter = 0;
+            jumpBufferCounter = 0;
         }
 
         private void JumpFalloff()
@@ -210,26 +233,6 @@ namespace Player
             trail.emitting = false;
         }
 
-        private float CooldownTimer(float cooldownCounter)
-        {
-            if(cooldownCounter > 0)
-            {
-                cooldownCounter -= Time.deltaTime;
-            }
-
-            if(cooldownCounter < 0)
-            {
-                cooldownCounter = 0;
-            }
-
-            return cooldownCounter;
-        }
-
-        private float ResetCooldownTimer(float cooldown)
-        {
-            return cooldown;
-        }
-
         private int GetDirection01()
         {
             int direction = 1;
@@ -257,16 +260,6 @@ namespace Player
             yield return new WaitForSeconds(0.25f);
 
             gameManager.isGameOver = true;
-        }
-
-        private void GetHorizontalMp()
-        {
-            Collider2D[] horizontalMps = Physics2D.OverlapBoxAll(groundChecker.groundCheckerTransform.position, groundChecker.groundCheckSize, 0, groundChecker.groundLayer);
-
-            foreach(Collider2D hMp in horizontalMps)
-            {
-                currentHorizontalMp = hMp.GetComponent<HorizontalMovePlatform>();
-            }
         }
     }
 }

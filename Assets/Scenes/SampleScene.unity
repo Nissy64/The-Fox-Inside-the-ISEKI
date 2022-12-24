@@ -692,27 +692,36 @@ TrailRenderer:
   m_Time: 0.5
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.5
+    widthMultiplier: 0.3
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
         value: 1
-        inSlope: 1.5894294
-        outSlope: 1.5894294
+        inSlope: 0.94311774
+        outSlope: 0.94311774
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.06521739
+        outWeight: 0.13390267
       - serializedVersion: 3
-        time: 1
-        value: 0.8292675
-        inSlope: -0.59532624
-        outSlope: -0.59532624
+        time: 0.7562644
+        value: 0.83988196
+        inSlope: 7.3092237
+        outSlope: 7.3092237
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.13315219
+        inWeight: 0.04929102
+        outWeight: 0.22098623
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1.1313065
+        outSlope: -1.1313065
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.12911391
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -1064,10 +1073,13 @@ MonoBehaviour:
   dashingTime: 0.2
   canDash: 1
   isDashing: 0
-  playerFalloffMultiplier: 6.5
-  playerJumpForce: 21
+  playerFalloffMultiplier: 8.25
+  playerJumpForce: 19.5
+  palyerAirJumpForceMultiplier: 1.5
   coyoteTime: 0.15
   coyoteTimeCounter: 0
+  jumpBufferTime: 0.2
+  jumpBufferCounter: 0
   groundChecker: {fileID: 1396370688}
   animator: {fileID: 814743536}
 --- !u!61 &814743532
@@ -1114,7 +1126,7 @@ CapsuleCollider2D:
   m_Direction: 1
 --- !u!95 &814743536
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1131,7 +1143,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &816268393
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,10 +1519,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   silhouette: {fileID: 1788236433}
-  startSilhouetteScalingSeconds: 1.25
-  endSilhouetteScalingSeconds: 1
-  endSilhouetteEase: 18
-  startSilhouetteEase: 17
+  startSilhouetteScalingSeconds: 1
+  endSilhouetteScalingSeconds: 0.5
+  startWaitSec: 0.5
+  startSilhouetteEase: 14
+  endSilhouetteEase: 15
   isGameOver: 0
 --- !u!1 &1396370686
 GameObject:
@@ -1557,7 +1570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groundCheckerTransform: {fileID: 1396370687}
-  groundCheckSize: {x: 0.875, y: 0.1875}
+  groundCheckSize: {x: 0.875, y: 0.0625}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8

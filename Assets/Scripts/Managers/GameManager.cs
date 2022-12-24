@@ -10,13 +10,14 @@ namespace Managers
     public class GameManager : MonoBehaviour
     {
         public Image silhouette;
-        [Range(0, 2)]
+        [Range(0, 10)]
         public float startSilhouetteScalingSeconds = 1f;
-        [Range(0, 2)]
+        [Range(0, 10)]
         public float endSilhouetteScalingSeconds = 1f;
-        public Ease endSilhouetteEase = Ease.InOutCubic;
+        public float startWaitSec = 1;
         public Ease startSilhouetteEase = Ease.InOutCirc;
-        private int defaultsilhouetteScale = 15000;
+        public Ease endSilhouetteEase = Ease.InOutCubic;
+        private int defaultsilhouetteScale = 5000;
         [ReadOnly]
         public bool isGameOver;
 
@@ -27,14 +28,14 @@ namespace Managers
 
         void Start()
         {
-            Invoke(nameof(StartGame), 0.25f);
+            Invoke(nameof(StartGame), startWaitSec);
         }
 
         void Update()
         {
             if(isGameOver)
             {
-                StartCoroutine(GameOver());
+                GameOver();
             }
         }
 
@@ -43,12 +44,13 @@ namespace Managers
             silhouette.rectTransform.DOScale(Vector3.one * defaultsilhouetteScale, startSilhouetteScalingSeconds).SetEase(startSilhouetteEase);
         }
 
-        private IEnumerator GameOver()
+        private void GameOver()
         {
-            silhouette.rectTransform.DOScale(Vector3.zero, endSilhouetteScalingSeconds).SetEase(endSilhouetteEase);
+            silhouette.rectTransform.DOScale(Vector3.zero, endSilhouetteScalingSeconds).SetEase(endSilhouetteEase).OnComplete(() => Invoke(nameof(ReLoadScene), 0.5f));
+        }
 
-            yield return new WaitForSeconds(endSilhouetteScalingSeconds);
-
+        private void ReLoadScene()
+        {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
