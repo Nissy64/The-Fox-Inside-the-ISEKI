@@ -4,7 +4,7 @@ using UnityEngine;
 using Objects;
 using Managers;
 
-namespace Player 
+namespace Player
 {
     public class PlayerMovement : MonoBehaviour
     {
@@ -222,11 +222,6 @@ namespace Player
             bool rightInner = Physics2D.Raycast(playerTransform.position + innerRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer);
             bool leftEdge = Physics2D.Raycast(playerTransform.position - edgeRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer);
             bool leftInner = Physics2D.Raycast(playerTransform.position - innerRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer);
-
-            print("rightEdge: " + rightEdge);
-            print("rightInner: " + rightInner);
-            print("leftEdge: " + leftEdge);
-            print("leftInner: " + leftInner);
 
             canCornerCorrect = !(rightInner && leftInner) && ((rightEdge && !rightInner) || (leftEdge && !leftInner));
         }
