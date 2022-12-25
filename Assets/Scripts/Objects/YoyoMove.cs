@@ -14,5 +14,16 @@ namespace Objects
 
             rb.MovePosition(position);
         }
+
+        public static void VerticalMove(float startPos, float endPos, float speed, Rigidbody2D rb, float time)
+        {
+            Vector2 vec2StartPos = new Vector2(rb.position.x, startPos);
+            Vector2 vec2EndPos = new Vector2(rb.position.x, endPos);
+
+            float distance = Vector2.Distance(vec2StartPos, vec2EndPos) / 2;
+            Vector2 position = new Vector2(vec2StartPos.x, ((vec2StartPos.y + vec2EndPos.y) / 2) + Mathf.Sin(speed * time) * distance);
+
+            rb.MovePosition(position);
+        }
     }
 }

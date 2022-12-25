@@ -33,15 +33,7 @@ namespace Objects
 
         void FixedUpdate()
         {
-            if(isPlayerOnMp)
-            {
-                playerRb.velocity += new Vector2(mpVelocity.x - playerRb.velocity.x, 0);
-                playerMovement.palyerSpeed = playerOnMpSpeed;
-            }
-            else
-            {
-                playerMovement.palyerSpeed = defaultPlayerSpeed;
-            }
+            MovingForce();
 
             YoyoMove.HorizontalMove(startMpPosition, endMpPosition, mpSpeed, mpRb, Managers.TimeManager.fixedDeltaTimer);
         }
@@ -53,11 +45,11 @@ namespace Objects
 
         void OnDrawGizmosSelected()
         {
-        Vector3 vec3StartPos = new Vector3(startMpPosition, mpTransform.position.y, 0);
-        Vector3 vec3EndPos = new Vector3(endMpPosition, mpTransform.position.y, 0);
+            Vector3 vec3StartPos = new Vector3(startMpPosition, mpTransform.position.y, 0);
+            Vector3 vec3EndPos = new Vector3(endMpPosition, mpTransform.position.y, 0);
 
-        Gizmos.DrawIcon(vec3StartPos, FolderManager.GetGizmosFiles(startMpPositionIcon), true);
-        Gizmos.DrawIcon(vec3EndPos, FolderManager.GetGizmosFiles(endMpPositionIcon), true);
+            Gizmos.DrawIcon(vec3StartPos, FolderManager.GetGizmosFiles(startMpPositionIcon), true);
+            Gizmos.DrawIcon(vec3EndPos, FolderManager.GetGizmosFiles(endMpPositionIcon), true);
         }
 
         void OnTriggerStay2D(Collider2D collider)
@@ -85,6 +77,19 @@ namespace Objects
             mpVelocity = (position - prevPosition) / Time.deltaTime;
 
             prevPosition = position;
+        }
+
+        private void MovingForce()
+        {
+            if(isPlayerOnMp)
+            {
+                playerRb.velocity += new Vector2(mpVelocity.x - playerRb.velocity.x, 0);
+                playerMovement.palyerSpeed = playerOnMpSpeed;
+            }
+            else
+            {
+                playerMovement.palyerSpeed = defaultPlayerSpeed;
+            }
         }
     }
 }

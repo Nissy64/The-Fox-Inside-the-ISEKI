@@ -1,6 +1,4 @@
 using UnityEngine;
-using DG.Tweening;
-using System.Collections;
 using Managers;
 
 namespace Objects
@@ -8,49 +6,35 @@ namespace Objects
     public class VerticalMovePlatform : MonoBehaviour
     {
         public Transform mpTransform;
-        public Transform playerTransform;
         public Rigidbody2D mpRb;
         public Rigidbody2D playerRb;
-        public Animator mpAnimator;
+        public float playerOnMpForceMultiply = 10;
         public string playerTag;
-        [ReadOnly] 
         public float startMpPosition = 0;
         public float endMpPosition;
         public FolderManager.GizmosFiles startMpPositionIcon;
         public FolderManager.GizmosFiles endMpPositionIcon;
-        public float mpDuration = 2;
-        public string mpAnimState = "State";
-        public int mpWaitSecond = 1;
-        [Range(1, 100)]
-        public float downdingForceMultiply = 10;
+        public float mpSpeed = 2;
         [ReadOnly]
         public Vector2 mpVelocity;
         private Vector2 prevPosition;
         private bool isPlayerOnMp = false;
-        private MonoBehaviour monoB;
 
         void Awake()
         {
-            startMpPosition = mpTransform.position.y;
             prevPosition = mpTransform.position;
-            monoB = gameObject.GetComponent<MonoBehaviour>();
         }
 
         void Start()
         {
-            // YoyoMove.Move
-            //     (new Vector2(mpTransform.position.x, startMpPosition), new Vector2(mpTransform.position.x, endMpPosition), 
-            //     mpDuration, mpDuration, 
-            //     mpWaitSecond, mpWaitSecond, 
-            //     mpRb, 
-            //     mpAnimator, mpAnimState,
-            //     monoB
-            //     );
+            
         }
 
         void FixedUpdate()
         {
             DowndingForce();
+
+            YoyoMove.VerticalMove(startMpPosition, endMpPosition, mpSpeed, mpRb, Managers.TimeManager.fixedDeltaTimer);
         }
 
         void Update()
@@ -60,8 +44,11 @@ namespace Objects
 
         void OnDrawGizmosSelected()
         {
-            Gizmos.DrawIcon(mpTransform.position, FolderManager.GetGizmosFiles(startMpPositionIcon), true);
-            Gizmos.DrawIcon(new Vector3(mpTransform.position.x, endMpPosition, 0), FolderManager.GetGizmosFiles(endMpPositionIcon), true);
+            Vector3 vec3StartPos = new Vector3(mpTransform.position.x, startMpPosition, 0);
+            Vector3 vec3EndPos = new Vector3(mpTransform.position.x, endMpPosition, 0);
+
+            Gizmos.DrawIcon(vec3StartPos, FolderManager.GetGizmosFiles(startMpPositionIcon), true);
+            Gizmos.DrawIcon(vec3EndPos, FolderManager.GetGizmosFiles(endMpPositionIcon), true);
         }
 
         void OnTriggerStay2D(Collider2D collider)
@@ -69,7 +56,7 @@ namespace Objects
             if(collider.CompareTag(playerTag))
             {
                 isPlayerOnMp = true;
-                playerRb.position = new Vector2(playerTransform.position.x, mpTransform.position.y + 1.4375f);
+                playerRb.position = new Vector2(playerRb.position.x, mpTransform.position.y + 1.4375f);
             }
         }
 
@@ -96,7 +83,7 @@ namespace Objects
         {
             if(!isPlayerOnMp) return;
             if(!(mpVelocity.y > 0)) return;
-            playerRb.AddForce(Vector2.down * Mathf.Abs(mpVelocity.y) * downdingForceMultiply * Time.deltaTime);
+            playerRb.AddForce(Vector2.down * Mathf.Abs(mpVelocity.y) * playerOnMpForceMultiply * Time.deltaTime);
         }
     }
 }

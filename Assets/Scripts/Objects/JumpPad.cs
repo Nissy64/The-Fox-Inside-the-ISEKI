@@ -5,7 +5,7 @@ namespace Objects
 {
     public class JumpPad : MonoBehaviour
     {
-        public Animator myAnimator;
+        public Animator jumpPadAnimator;
         public float bounce = 5f;
         private Rigidbody2D playerRb;
 
@@ -15,7 +15,7 @@ namespace Objects
             {
                 collision.gameObject.GetComponent<Animator>().SetBool("IsJumping", true);
                 playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
-                myAnimator.SetBool("IsRiding", true);
+                jumpPadAnimator.SetBool("IsRiding", true);
                 Jump();
                 StartCoroutine(StopAnimation());
             }
@@ -24,12 +24,12 @@ namespace Objects
         private IEnumerator StopAnimation()
         {
             yield return new WaitForSeconds(0.6f);
-            myAnimator.SetBool("IsRiding", false);
+            jumpPadAnimator.SetBool("IsRiding", false);
         }
 
         private void Jump()
         {
-            playerRb.velocity = Vector2.up * bounce;
+            playerRb.AddForce(Vector2.up * bounce, ForceMode2D.Impulse);
         }
     }
 }
