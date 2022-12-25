@@ -32,6 +32,8 @@ namespace Objects
 
         void FixedUpdate()
         {
+            MpVelocity();
+
             DowndingForce();
 
             YoyoMove.VerticalMove(startMpPosition, endMpPosition, mpSpeed, mpRb, Managers.TimeManager.fixedDeltaTimer);
@@ -39,7 +41,7 @@ namespace Objects
 
         void Update()
         {
-            MpVelocity();
+            
         }
 
         void OnDrawGizmosSelected()
@@ -51,7 +53,7 @@ namespace Objects
             Gizmos.DrawIcon(vec3EndPos, FolderManager.GetGizmosFiles(endMpPositionIcon), true);
         }
 
-        void OnTriggerStay2D(Collider2D collider)
+        void OnTriggerEnter2D(Collider2D collider)
         {
             if(collider.CompareTag(playerTag))
             {

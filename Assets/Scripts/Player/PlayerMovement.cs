@@ -112,7 +112,7 @@ namespace Player
 
             Run();
 
-            if(rb.velocity.y > 0.1f)
+            if(rb.velocity.y > 0.1f && canCornerCorrect)
             {
                 CornerCorrect(rb.velocity.y);
             }
@@ -135,7 +135,6 @@ namespace Player
                 if(jumpBufferCounter > 0 && !isJumping)
                 {
                     StartCoroutine(Jump());
-                    
                 }
             }
 
@@ -219,10 +218,17 @@ namespace Player
 
         private void CheckCollisions()
         {
-            canCornerCorrect = Physics2D.Raycast(transform.position + edgeRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer) &&
-                            !Physics2D.Raycast(transform.position + innerRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer) ||
-                            Physics2D.Raycast(transform.position - edgeRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer) &&
-                            !Physics2D.Raycast(transform.position - innerRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer);
+            bool rightEdge = Physics2D.Raycast(playerTransform.position + edgeRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer);
+            bool rightInner = Physics2D.Raycast(playerTransform.position + innerRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer);
+            bool leftEdge = Physics2D.Raycast(playerTransform.position - edgeRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer);
+            bool leftInner = Physics2D.Raycast(playerTransform.position - innerRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer);
+
+            print("rightEdge: " + rightEdge);
+            print("rightInner: " + rightInner);
+            print("leftEdge: " + leftEdge);
+            print("leftInner: " + leftInner);
+
+            canCornerCorrect = !(rightInner && leftInner) && ((rightEdge && !rightInner) || (leftEdge && !leftInner));
         }
 
         private void JumpFalloff()
