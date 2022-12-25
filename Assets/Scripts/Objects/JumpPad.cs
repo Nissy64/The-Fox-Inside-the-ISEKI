@@ -23,12 +23,15 @@ namespace Objects
 
         private IEnumerator StopAnimation()
         {
-            yield return new WaitForSeconds(0.6f);
+            WaitForSeconds waitSec = new WaitForSeconds(0.6f);
+
+            yield return waitSec;
             jumpPadAnimator.SetBool("IsRiding", false);
         }
 
         private void Jump()
         {
+            playerRb.velocity = Vector2.zero;
             playerRb.AddForce(Vector2.up * bounce, ForceMode2D.Impulse);
         }
     }

@@ -75,8 +75,10 @@ namespace Objects
 
         private IEnumerator PressEnd()
         {
+            WaitForSeconds waitSec = new WaitForSeconds(pressedRockWaitSecond);
+
             isPressing = false;
-            yield return new WaitForSeconds(pressedRockWaitSecond);
+            yield return waitSec;
 
             pressRockTransform.DOLocalMoveY(startPressRockPosition, endPressRockDuration)
                 .SetEase(endPressRockEase)

@@ -46,6 +46,17 @@ namespace Player
         public float jumpBufferTime = 0.2f;
         [ReadOnly]
         public float jumpBufferCounter = 0;
+        [ReadOnly]
+        public bool isJumping;
+        #endregion
+
+        #region CornerCorrection
+        [Header("Corner Correction")]
+        public float topRaycastLength;
+        public Vector3 edgeRaycastOffset;
+        public Vector3 innerRaycastOffset;
+        [ReadOnly]
+        public bool canCornerCorrect;
         #endregion
 
         #region CheckGround
@@ -66,6 +77,8 @@ namespace Player
 
         void FixedUpdate()
         {
+            CheckCollisions();
+
             Movement();
 
             CoyoteTimer();
@@ -77,6 +90,19 @@ namespace Player
             else animator.SetFloat("Speed", Mathf.Abs(inputManager.moveInput));
         }
 
+        void OnDrawGizmosSelected()
+        {
+            Gizmos.DrawLine(transform.position + edgeRaycastOffset, transform.position + edgeRaycastOffset + Vector3.up * topRaycastLength);
+            Gizmos.DrawLine(transform.position - edgeRaycastOffset, transform.position - edgeRaycastOffset + Vector3.up * topRaycastLength);
+            Gizmos.DrawLine(transform.position + innerRaycastOffset, transform.position + innerRaycastOffset + Vector3.up * topRaycastLength);
+            Gizmos.DrawLine(transform.position - innerRaycastOffset, transform.position - innerRaycastOffset + Vector3.up * topRaycastLength);
+
+            Gizmos.DrawLine(transform.position - innerRaycastOffset + Vector3.up * topRaycastLength,
+                            transform.position - innerRaycastOffset + Vector3.up * topRaycastLength + Vector3.left * topRaycastLength);
+            Gizmos.DrawLine(transform.position + innerRaycastOffset + Vector3.up * topRaycastLength,
+                            transform.position + innerRaycastOffset + Vector3.up * topRaycastLength + Vector3.right * topRaycastLength);
+        }
+
         private void Movement()
         {
             if(gameManager.isGameOver) return;
@@ -85,6 +111,11 @@ namespace Player
             FlipSprite();
 
             Run();
+
+            if(rb.velocity.y > 0.1f)
+            {
+                CornerCorrect(rb.velocity.y);
+            }
 
             if(inputManager.jumpInput)
             {
@@ -101,10 +132,10 @@ namespace Player
                 animator.SetBool("IsDashing", false);
                 canDash = true;
 
-                if(jumpBufferCounter > 0)
+                if(jumpBufferCounter > 0 && !isJumping)
                 {
-                    Jump();
-                    animator.SetBool("IsJumping", true);
+                    StartCoroutine(Jump());
+                    
                 }
             }
 
@@ -138,8 +169,11 @@ namespace Player
             rb.AddForce(movement * Vector2.right);
         }
 
-        public void Jump()
+        public IEnumerator Jump()
         {
+            WaitForSeconds waitSec = new WaitForSeconds(0.5f);
+            coyoteTimeCounter = 0;
+            jumpBufferCounter = 0;
             float multiplier = 1;
 
             if(groundChecker.isGround)
@@ -153,8 +187,42 @@ namespace Player
 
             rb.velocity = Vector2.up * playerJumpForce * multiplier;
 
-            coyoteTimeCounter = 0;
-            jumpBufferCounter = 0;
+            animator.SetBool("IsJumping", true);
+            isJumping = true;
+
+            yield return waitSec;
+
+            isJumping = false;
+        }
+
+        private void CornerCorrect(float YVelocity)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(playerTransform.position - innerRaycastOffset + Vector3.up * topRaycastLength, Vector3.left, topRaycastLength, groundChecker.groundLayer);
+            if(hit.collider != null)
+            {
+                float newPos = Vector3.Distance(new Vector3(hit.point.x, playerTransform.position.y, 0) + Vector3.up * topRaycastLength, 
+                    playerTransform.position - edgeRaycastOffset + Vector3.up * topRaycastLength);
+                playerTransform.position = new Vector3(playerTransform.position.x + newPos, playerTransform.position.y, playerTransform.position.z);
+                rb.velocity = new Vector2(rb.velocity.x, YVelocity);
+                return;
+            }
+
+            hit = Physics2D.Raycast(playerTransform.position - innerRaycastOffset + Vector3.up * topRaycastLength, Vector3.right, topRaycastLength, groundChecker.groundLayer);
+            if(hit.collider != null)
+            {
+                float newPos = Vector3.Distance(new Vector3(hit.point.x, playerTransform.position.y, 0) + Vector3.up * topRaycastLength, 
+                    playerTransform.position + edgeRaycastOffset + Vector3.up * topRaycastLength);
+                playerTransform.position = new Vector3(playerTransform.position.x - newPos, playerTransform.position.y, playerTransform.position.z);
+                rb.velocity = new Vector2(rb.velocity.x, YVelocity);
+            }
+        }
+
+        private void CheckCollisions()
+        {
+            canCornerCorrect = Physics2D.Raycast(transform.position + edgeRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer) &&
+                            !Physics2D.Raycast(transform.position + innerRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer) ||
+                            Physics2D.Raycast(transform.position - edgeRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer) &&
+                            !Physics2D.Raycast(transform.position - innerRaycastOffset, Vector2.up, topRaycastLength, groundChecker.groundLayer);
         }
 
         private void JumpFalloff()
@@ -228,7 +296,9 @@ namespace Player
 
         private IEnumerator StopDashing()
         {
-            yield return new WaitForSeconds(dashingTime);
+            WaitForSeconds waitSec = new WaitForSeconds(dashingTime);
+
+            yield return waitSec;
             isDashing = false;
             trail.emitting = false;
         }
@@ -254,10 +324,11 @@ namespace Player
 
         public IEnumerator PlayerGameOver()
         {
+            WaitForSeconds waitSec = new WaitForSeconds(0.25f);
             rb.simulated = false;
             animator.SetBool("IsGameOver", true);
 
-            yield return new WaitForSeconds(0.25f);
+            yield return waitSec;
 
             gameManager.isGameOver = true;
         }
