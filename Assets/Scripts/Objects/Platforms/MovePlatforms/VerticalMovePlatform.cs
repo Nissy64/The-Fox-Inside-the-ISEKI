@@ -36,7 +36,7 @@ namespace Objects
 
             DowndingForce();
 
-            YoyoMove.VerticalMove(startMpPosition, endMpPosition, mpSpeed, mpRb, Managers.TimeManager.fixedDeltaTimer);
+            YoyoMove.VerticalMove(startMpPosition, endMpPosition, mpSpeed, mpRb, Time.time);
         }
 
         void Update()

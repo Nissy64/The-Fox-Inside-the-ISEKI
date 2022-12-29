@@ -33,6 +33,7 @@ namespace Player
         public bool canDash = true;
         [ReadOnly]
         public bool isDashing;
+        private WaitForSeconds stopDashingWaitSec;
         #endregion
 
         #region Jump
@@ -48,6 +49,7 @@ namespace Player
         public float jumpBufferCounter = 0;
         [ReadOnly]
         public bool isJumping;
+        private WaitForSeconds jumpWaitSec;
         #endregion
 
         #region CornerCorrection
@@ -69,8 +71,13 @@ namespace Player
         public Animator animator;
         #endregion
 
+        private WaitForSeconds gameOverWaitSec;
+
         void Awake()
         {
+            jumpWaitSec = new WaitForSeconds(0.5f);
+            stopDashingWaitSec = new WaitForSeconds(dashingTime);
+            gameOverWaitSec = new WaitForSeconds(0.25f);
             canDash = true;
             animator.SetBool("IsGameOver", false);
         }
@@ -170,7 +177,6 @@ namespace Player
 
         public IEnumerator Jump()
         {
-            WaitForSeconds waitSec = new WaitForSeconds(0.5f);
             coyoteTimeCounter = 0;
             jumpBufferCounter = 0;
             float multiplier = 1;
@@ -189,7 +195,7 @@ namespace Player
             animator.SetBool("IsJumping", true);
             isJumping = true;
 
-            yield return waitSec;
+            yield return jumpWaitSec;
 
             isJumping = false;
         }
@@ -297,9 +303,7 @@ namespace Player
 
         private IEnumerator StopDashing()
         {
-            WaitForSeconds waitSec = new WaitForSeconds(dashingTime);
-
-            yield return waitSec;
+            yield return stopDashingWaitSec;
             isDashing = false;
             trail.emitting = false;
         }
@@ -325,11 +329,10 @@ namespace Player
 
         public IEnumerator PlayerGameOver()
         {
-            WaitForSeconds waitSec = new WaitForSeconds(0.25f);
             rb.simulated = false;
             animator.SetBool("IsGameOver", true);
 
-            yield return waitSec;
+            yield return gameOverWaitSec;
 
             gameManager.isGameOver = true;
         }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class OptionManager : MonoBehaviour
@@ -8,11 +6,11 @@ public class OptionManager : MonoBehaviour
 
     void Start()
     {
-        
+        Application.targetFrameRate = maxFps;
     }
 
     void Update()
     {
-        Application.targetFrameRate = maxFps;
+        
     }
 }

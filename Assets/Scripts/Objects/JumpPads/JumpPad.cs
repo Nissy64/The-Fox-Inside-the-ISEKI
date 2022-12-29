@@ -8,6 +8,12 @@ namespace Objects
         public Animator jumpPadAnimator;
         public float bounce = 5f;
         private Rigidbody2D playerRb;
+        private WaitForSeconds stopAnimWaitSec;
+
+        void Awake()
+        {
+            stopAnimWaitSec = new WaitForSeconds(0.6f);
+        }
 
         void OnCollisionEnter2D(Collision2D collision)
         {
@@ -23,9 +29,7 @@ namespace Objects
 
         private IEnumerator StopAnimation()
         {
-            WaitForSeconds waitSec = new WaitForSeconds(0.6f);
-
-            yield return waitSec;
+            yield return stopAnimWaitSec;
             jumpPadAnimator.SetBool("IsRiding", false);
         }
 

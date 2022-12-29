@@ -37,7 +37,7 @@ namespace Objects
 
             MovingForce();
 
-            YoyoMove.HorizontalMove(startMpPosition, endMpPosition, mpSpeed, mpRb, Managers.TimeManager.fixedDeltaTimer);
+            YoyoMove.HorizontalMove(startMpPosition, endMpPosition, mpSpeed, mpRb, Time.time);
         }
 
         void Update()
