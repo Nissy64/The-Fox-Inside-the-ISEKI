@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
-using Player;
 
 namespace Objects
 {
-    public class CollapsePlatform : MonoBehaviour
+    public class AntiGravityPlatform : MonoBehaviour
     {
-        public Rigidbody2D cpRb;
-        public BoxCollider2D cpBoxCollider;
+        public SpriteRenderer apSpriteRenderer;
+        public Rigidbody2D apRb;
+        public BoxCollider2D apBoxCollider;
         public float shakeRange = 0.0625f;
         public float shakeDelay = 0.05f;
         public float fallDelay = 1;
-        public float fallGravityScale = 3;
+        public float fallGravityScale = -2;
         public float destroyDelay = 2;
         public string playerTag = "Player";
         [ReadOnly]
@@ -21,16 +22,18 @@ namespace Objects
         public bool isCollapsing = false;
         private WaitForSeconds fallWaitSec;
         private WaitForSeconds shakeWaitSec;
+        private WaitForSeconds colliderDisableWaitSec;
         private Vector2 cpStartPos;
 
         void Start()
         {
             fallWaitSec = new WaitForSeconds(fallDelay);
             shakeWaitSec = new WaitForSeconds(shakeDelay);
+            colliderDisableWaitSec = new WaitForSeconds(destroyDelay / 2);
 
-            cpRb.gravityScale = fallGravityScale;
+            apRb.gravityScale = fallGravityScale;
 
-            cpStartPos  = cpRb.position;
+            cpStartPos  = apRb.position;
         }
 
         void Update()
@@ -62,22 +65,26 @@ namespace Objects
 
             isFalling = true;
 
-            cpRb.bodyType = RigidbodyType2D.Dynamic;
+            apRb.bodyType = RigidbodyType2D.Dynamic;
 
-            cpBoxCollider.enabled = false;
+            apSpriteRenderer.DOFade(0, destroyDelay);
 
             Destroy(gameObject, destroyDelay);
+
+            yield return colliderDisableWaitSec;
+
+            apBoxCollider.enabled = false;
         }
 
         private IEnumerator Shake()
         {
             yield return shakeWaitSec;
 
-            cpRb.position = new Vector2(cpStartPos.x + shakeRange, cpRb.position.y);
+            apRb.position = new Vector2(cpStartPos.x + shakeRange, apRb.position.y);
 
             yield return shakeWaitSec;
 
-            cpRb.position = new Vector2(cpStartPos.x - shakeRange, cpRb.position.y);
+            apRb.position = new Vector2(cpStartPos.x - shakeRange, apRb.position.y);
         }
     }
 }
