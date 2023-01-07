@@ -26,7 +26,11 @@ namespace Player
 
         #region Dash
         [Header("Dash")]
-        public TrailRenderer trail;
+        public ParticleSystem playerDashParticle;
+        [ColorUsage(true, true)]
+        public Color normalOutlineColor = Color.black;
+        [ColorUsage(true, true)]
+        public Color dashingOutlineColor = Color.white * 2;
         public float dashingPower = 24;
         public float dashingTime = 0.2f;
         [ReadOnly]
@@ -61,23 +65,22 @@ namespace Player
         public bool canCornerCorrect;
         #endregion
 
-        #region CheckGround
-        [Header("Check Ground")]
+        #region Components
+        [Header("Components")]
+        public Material playerMaterial;
         public GroundChecker groundChecker;
-        #endregion
-
-        #region Animation
-        [Header("Animation")]
         public Animator animator;
         #endregion
 
         private WaitForSeconds gameOverWaitSec;
+        private Color gameOverOutlineColor = new Color(0, 0, 0, 0);
 
         void Awake()
         {
             jumpWaitSec = new WaitForSeconds(0.5f);
             stopDashingWaitSec = new WaitForSeconds(dashingTime);
             gameOverWaitSec = new WaitForSeconds(0.25f);
+            playerMaterial.color = normalOutlineColor;
             canDash = true;
             animator.SetBool("IsGameOver", false);
         }
@@ -272,7 +275,7 @@ namespace Player
         private void StartDash()
         {
             isDashing = true;
-            trail.emitting = true;
+
             Vector2 dashingDirection = new Vector2(inputManager.moveInput, inputManager.verticalInput);
 
             if(inputManager.moveInput == 0 && inputManager.verticalInput != 0)
@@ -295,6 +298,8 @@ namespace Player
 
                 animator.SetBool("IsJumping", false);
                 animator.SetBool("IsDashing", true);
+                playerMaterial.color = dashingOutlineColor;
+                playerDashParticle.Play();
                 coyoteTimeCounter = 0;
                 canDash = false;
                 return;
@@ -304,8 +309,9 @@ namespace Player
         private IEnumerator StopDashing()
         {
             yield return stopDashingWaitSec;
+            playerMaterial.color = normalOutlineColor;
+            playerDashParticle.Stop();
             isDashing = false;
-            trail.emitting = false;
         }
 
         private int GetDirection01()
@@ -330,6 +336,8 @@ namespace Player
         public IEnumerator PlayerGameOver()
         {
             rb.simulated = false;
+            playerMaterial.color = gameOverOutlineColor;
+            playerDashParticle.Stop();
             animator.SetBool("IsGameOver", true);
 
             yield return gameOverWaitSec;
