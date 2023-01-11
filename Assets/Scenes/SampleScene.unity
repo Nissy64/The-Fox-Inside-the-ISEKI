@@ -5620,13 +5620,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1226836368}
   inputManager: {fileID: 492979934}
-  playerTransform: {fileID: 814743528}
   rb: {fileID: 814743529}
   palyerSpeed: 11.75
   acceleration: 9.5
   decceleration: 10
   velPower: 0.9
-  playerDashParticle: {fileID: 774768701}
   normalOutlineColor: {r: 0, g: 0, b: 0, a: 0}
   dashingOutlineColor: {r: 0, g: 0.56150883, b: 4.679245, a: 0}
   dashingPower: 24
@@ -5645,6 +5643,8 @@ MonoBehaviour:
   edgeRaycastOffset: {x: 0.71, y: 0, z: 0}
   innerRaycastOffset: {x: 0.35, y: 0, z: 0}
   canCornerCorrect: 0
+  playerTransform: {fileID: 814743528}
+  playerDashParticle: {fileID: 774768701}
   playerMaterial: {fileID: 2100000, guid: e1bae2caa8b4a1e48855e703921be5cf, type: 2}
   groundChecker: {fileID: 1396370688}
   animator: {fileID: 814743536}

@@ -16,7 +16,6 @@ namespace Player
 
         #region Run
         [Header("Run")]
-        public Transform playerTransform;
         public Rigidbody2D rb;
         public float palyerSpeed = 5;
         public float acceleration;
@@ -26,7 +25,6 @@ namespace Player
 
         #region Dash
         [Header("Dash")]
-        public ParticleSystem playerDashParticle;
         [ColorUsage(true, true)]
         public Color normalOutlineColor = Color.black;
         [ColorUsage(true, true)]
@@ -67,6 +65,8 @@ namespace Player
 
         #region Components
         [Header("Components")]
+        public Transform playerTransform;
+        public ParticleSystem playerDashParticle;
         public Material playerMaterial;
         public GroundChecker groundChecker;
         public Animator animator;
@@ -184,6 +184,9 @@ namespace Player
             jumpBufferCounter = 0;
             float multiplier = 1;
 
+            animator.SetBool("IsJumping", true);
+            isJumping = true;
+
             if(groundChecker.isGround)
             {
                 multiplier = 1;
@@ -194,9 +197,6 @@ namespace Player
             }
 
             rb.velocity = Vector2.up * playerJumpForce * multiplier;
-
-            animator.SetBool("IsJumping", true);
-            isJumping = true;
 
             yield return jumpWaitSec;
 

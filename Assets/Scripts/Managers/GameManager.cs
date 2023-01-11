@@ -1,5 +1,3 @@
-using System.Collections;
-using Unity.Burst;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
